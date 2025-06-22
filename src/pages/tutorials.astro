@@ -1,0 +1,646 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getAllTutorials, getFeaturedTutorials } from '../data/securityTutorials.ts';
+
+const allTutorials = getAllTutorials();
+const featuredTutorials = getFeaturedTutorials();
+
+// Group tutorials by difficulty
+const tutorialsByDifficulty = {
+  'Beginner': allTutorials.filter(t => t.difficulty === 'Beginner'),
+  'Intermediate': allTutorials.filter(t => t.difficulty === 'Intermediate'),
+  'Advanced': allTutorials.filter(t => t.difficulty === 'Advanced')
+};
+---
+
+<Layout title="Security Tutorials - CyberSec Insights" description="Step-by-step cybersecurity tutorials covering Active Directory, vulnerability scanning, data protection, and security awareness training.">
+  <Header />
+  
+  <main class="tutorials-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Security Tutorials</h1>
+        <p class="page-subtitle">
+          Comprehensive step-by-step guides for implementing cybersecurity solutions and best practices
+        </p>
+      </div>
+
+      <!-- Featured Tutorials -->
+      <section class="featured-tutorials">
+        <h2 class="section-title">🌟 Featured Tutorials</h2>
+        <div class="featured-grid">
+          {featuredTutorials.map(tutorial => (
+            <div class="tutorial-card featured">
+              <div class="tutorial-header">
+                <div class="tutorial-meta">
+                  <span class={`difficulty-badge ${tutorial.difficulty.toLowerCase()}`}>
+                    {tutorial.difficulty}
+                  </span>
+                  <span class="steps-badge">{tutorial.steps} Steps</span>
+                </div>
+                <div class="tutorial-stats">
+                  <span class="read-time">📖 {tutorial.readTime}</span>
+                </div>
+              </div>
+              
+              <h3 class="tutorial-title">
+                <a href={`/tutorials/${tutorial.slug}`}>{tutorial.title}</a>
+              </h3>
+              
+              <p class="tutorial-excerpt">{tutorial.excerpt}</p>
+              
+              <div class="tutorial-details">
+                <div class="prerequisites">
+                  <h4>Prerequisites:</h4>
+                  <ul>
+                    {tutorial.prerequisites.map(prereq => (
+                      <li>{prereq}</li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div class="tools-required">
+                  <h4>Tools Required:</h4>
+                  <div class="tools-list">
+                    {tutorial.tools.map(tool => (
+                      <span class="tool-tag">{tool}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="tutorial-footer">
+                <div class="tutorial-tags">
+                  {tutorial.tags.slice(0, 3).map(tag => (
+                    <span class="tag">#{tag}</span>
+                  ))}
+                </div>
+                <a href={`/tutorials/${tutorial.slug}`} class="tutorial-link">
+                  Start Tutorial →
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- All Tutorials by Difficulty -->
+      <section class="all-tutorials">
+        <h2 class="section-title">📚 All Tutorials</h2>
+        
+        {Object.entries(tutorialsByDifficulty).map(([difficulty, tutorials]) => (
+          tutorials.length > 0 && (
+            <div class="difficulty-section">
+              <h3 class="difficulty-title">
+                <span class={`difficulty-icon ${difficulty.toLowerCase()}`}>
+                  {difficulty === 'Beginner' ? '🟢' : difficulty === 'Intermediate' ? '🟡' : '🔴'}
+                </span>
+                {difficulty} Level
+              </h3>
+              
+              <div class="tutorials-grid">
+                {tutorials.map(tutorial => (
+                  <div class="tutorial-card">
+                    <div class="tutorial-header">
+                      <div class="tutorial-meta">
+                        <span class={`difficulty-badge ${tutorial.difficulty.toLowerCase()}`}>
+                          {tutorial.difficulty}
+                        </span>
+                        <span class="steps-badge">{tutorial.steps} Steps</span>
+                      </div>
+                      <div class="tutorial-stats">
+                        <span class="read-time">📖 {tutorial.readTime}</span>
+                      </div>
+                    </div>
+                    
+                    <h4 class="tutorial-title">
+                      <a href={`/tutorials/${tutorial.slug}`}>{tutorial.title}</a>
+                    </h4>
+                    
+                    <p class="tutorial-excerpt">{tutorial.excerpt}</p>
+                    
+                    <div class="tutorial-quick-info">
+                      <div class="quick-prerequisites">
+                        <strong>Prerequisites:</strong> {tutorial.prerequisites.slice(0, 2).join(', ')}
+                        {tutorial.prerequisites.length > 2 && '...'}
+                      </div>
+                      
+                      <div class="quick-tools">
+                        <strong>Key Tools:</strong> {tutorial.tools.slice(0, 2).join(', ')}
+                        {tutorial.tools.length > 2 && '...'}
+                      </div>
+                    </div>
+                    
+                    <div class="tutorial-footer">
+                      <div class="tutorial-tags">
+                        {tutorial.tags.slice(0, 2).map(tag => (
+                          <span class="tag">#{tag}</span>
+                        ))}
+                      </div>
+                      <a href={`/tutorials/${tutorial.slug}`} class="tutorial-link">
+                        Start Tutorial →
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        ))}
+      </section>
+
+      <!-- Tutorial Categories -->
+      <section class="tutorial-categories">
+        <h2 class="section-title">🎯 Tutorial Categories</h2>
+        <div class="categories-grid">
+          <div class="category-card">
+            <div class="category-icon">🏗️</div>
+            <h3>Infrastructure Setup</h3>
+            <p>Build secure lab environments, Active Directory, and virtual machine configurations</p>
+            <ul>
+              <li>Active Directory Lab</li>
+              <li>Virtual Machine Security</li>
+              <li>Network Segmentation</li>
+            </ul>
+          </div>
+          
+          <div class="category-card">
+            <div class="category-icon">🔍</div>
+            <h3>Security Assessment</h3>
+            <p>Learn vulnerability scanning, penetration testing, and security evaluation techniques</p>
+            <ul>
+              <li>Vulnerability Scanning</li>
+              <li>Network Assessment</li>
+              <li>Web Application Testing</li>
+            </ul>
+          </div>
+          
+          <div class="category-card">
+            <div class="category-icon">🛡️</div>
+            <h3>Data Protection</h3>
+            <p>Implement encryption, access controls, and privacy protection measures</p>
+            <ul>
+              <li>Personnel Data Security</li>
+              <li>Database Encryption</li>
+              <li>Privacy Compliance</li>
+            </ul>
+          </div>
+          
+          <div class="category-card">
+            <div class="category-icon">🎓</div>
+            <h3>Security Training</h3>
+            <p>Develop security awareness programs and training initiatives</p>
+            <ul>
+              <li>Awareness Programs</li>
+              <li>Phishing Simulations</li>
+              <li>Security Culture</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Getting Started Guide -->
+      <section class="getting-started">
+        <h2 class="section-title">🚀 Getting Started</h2>
+        <div class="getting-started-content">
+          <div class="start-path">
+            <h3>New to Cybersecurity?</h3>
+            <p>Start with our beginner-friendly tutorials that build foundational knowledge:</p>
+            <ol>
+              <li><strong>Security Awareness Training</strong> - Understand the basics</li>
+              <li><strong>Virtual Machine Setup</strong> - Create safe testing environments</li>
+              <li><strong>Basic Vulnerability Scanning</strong> - Learn assessment techniques</li>
+              <li><strong>Data Protection Fundamentals</strong> - Implement basic controls</li>
+            </ol>
+            <a href="/tutorials/security-awareness-training-program" class="btn">Start Learning</a>
+          </div>
+          
+          <div class="advanced-path">
+            <h3>Experienced Professional?</h3>
+            <p>Jump into advanced tutorials for complex implementations:</p>
+            <ul>
+              <li><strong>Enterprise Active Directory</strong> - Complex domain architectures</li>
+              <li><strong>Advanced Vulnerability Assessment</strong> - Professional scanning techniques</li>
+              <li><strong>GDPR Compliance Implementation</strong> - Privacy protection frameworks</li>
+              <li><strong>Security Program Development</strong> - Organizational security</li>
+            </ul>
+            <a href="/tutorials/building-active-directory-lab" class="btn btn-secondary">Advanced Tutorials</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .tutorials-content {
+    padding: 2rem 0;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 3rem 0;
+  }
+
+  .page-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-subtitle {
+    font-size: 1.25rem;
+    color: #94A3B8;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #E2E8F0;
+  }
+
+  /* Featured Tutorials */
+  .featured-tutorials {
+    margin-bottom: 5rem;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+  }
+
+  .tutorial-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .tutorial-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .tutorial-card.featured {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+  }
+
+  .tutorial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .tutorial-meta {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .difficulty-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .difficulty-badge.beginner {
+    background: #22C55E;
+    color: white;
+  }
+
+  .difficulty-badge.intermediate {
+    background: #F59E0B;
+    color: white;
+  }
+
+  .difficulty-badge.advanced {
+    background: #EF4444;
+    color: white;
+  }
+
+  .steps-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    background: rgba(148, 163, 184, 0.2);
+    color: #94A3B8;
+  }
+
+  .read-time {
+    color: #64748B;
+    font-size: 0.875rem;
+  }
+
+  .tutorial-title {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+
+  .tutorial-title a {
+    color: #E2E8F0;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .tutorial-title a:hover {
+    color: #3B82F6;
+  }
+
+  .tutorial-excerpt {
+    color: #94A3B8;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .tutorial-details {
+    margin-bottom: 1.5rem;
+  }
+
+  .prerequisites,
+  .tools-required {
+    margin-bottom: 1rem;
+  }
+
+  .prerequisites h4,
+  .tools-required h4 {
+    color: #E2E8F0;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prerequisites ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .prerequisites li {
+    color: #CBD5E1;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .prerequisites li::before {
+    content: "✓";
+    color: #10B981;
+    position: absolute;
+    left: 0;
+  }
+
+  .tools-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tool-tag {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .tutorial-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .tutorial-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10B981;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .tutorial-link {
+    color: #3B82F6;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .tutorial-link:hover {
+    color: #60A5FA;
+    transform: translateX(4px);
+  }
+
+  /* All Tutorials Section */
+  .all-tutorials {
+    margin-bottom: 5rem;
+  }
+
+  .difficulty-section {
+    margin-bottom: 4rem;
+  }
+
+  .difficulty-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+    color: #E2E8F0;
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .difficulty-icon {
+    font-size: 1.5rem;
+  }
+
+  .tutorials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+
+  .tutorial-quick-info {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .quick-prerequisites,
+  .quick-tools {
+    color: #94A3B8;
+    margin-bottom: 0.5rem;
+  }
+
+  .quick-prerequisites strong,
+  .quick-tools strong {
+    color: #CBD5E1;
+  }
+
+  /* Tutorial Categories */
+  .tutorial-categories {
+    margin-bottom: 5rem;
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .category-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s ease;
+  }
+
+  .category-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .category-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px #3B82F6);
+  }
+
+  .category-card h3 {
+    color: #E2E8F0;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+  }
+
+  .category-card p {
+    color: #94A3B8;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .category-card ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+  }
+
+  .category-card li {
+    color: #CBD5E1;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .category-card li::before {
+    content: "→";
+    color: #3B82F6;
+    position: absolute;
+    left: 0;
+  }
+
+  /* Getting Started */
+  .getting-started {
+    margin-bottom: 3rem;
+  }
+
+  .getting-started-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  .start-path,
+  .advanced-path {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .start-path h3,
+  .advanced-path h3 {
+    color: #E2E8F0;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+  }
+
+  .start-path p,
+  .advanced-path p {
+    color: #94A3B8;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .start-path ol,
+  .advanced-path ul {
+    color: #CBD5E1;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .start-path li,
+  .advanced-path li {
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .featured-grid,
+    .tutorials-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .tutorial-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .tutorial-footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .getting-started-content {
+      grid-template-columns: 1fr;
+    }
+
+    .categories-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
