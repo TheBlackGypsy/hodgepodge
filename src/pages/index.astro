@@ -1,0 +1,177 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import BlogCard from '../components/BlogCard.astro';
+import Footer from '../components/Footer.astro';
+import { getFeaturedPosts, getLatestPosts } from '../data/blogPosts.ts';
+
+const featuredPosts = getFeaturedPosts();
+const latestPosts = getLatestPosts(4);
+---
+
+<Layout title="CyberSec Insights - Professional Cybersecurity Blog">
+  <Header />
+  <Hero />
+  
+  <main class="main-content">
+    <div class="container">
+      <!-- Featured Articles -->
+      <section class="featured-section">
+        <h2 class="section-title">Featured Articles</h2>
+        <div class="featured-grid">
+          {featuredPosts.map(post => (
+            <BlogCard {...post} />
+          ))}
+        </div>
+      </section>
+
+      <!-- Latest Posts -->
+      <section id="latest-posts" class="latest-section">
+        <h2 class="section-title">Latest Insights</h2>
+        <div class="posts-grid">
+          {latestPosts.map(post => (
+            <BlogCard {...post} />
+          ))}
+        </div>
+        <div class="section-actions">
+          <a href="/blog" class="btn">View All Articles</a>
+        </div>
+      </section>
+
+      <!-- Categories -->
+      <section class="categories-section">
+        <h2 class="section-title">Explore Categories</h2>
+        <div class="categories-grid">
+          <a href="/threats" class="category-card">
+            <div class="category-icon">🚨</div>
+            <h3>Threat Analysis</h3>
+            <p>Latest threat intelligence and attack vectors</p>
+          </a>
+          <a href="/defense" class="category-card">
+            <div class="category-icon">🛡️</div>
+            <h3>Defense Strategies</h3>
+            <p>Proven security frameworks and best practices</p>
+          </a>
+          <a href="/tutorials" class="category-card">
+            <div class="category-icon">🎓</div>
+            <h3>Security Tutorials</h3>
+            <p>Step-by-step guides and practical implementations</p>
+          </a>
+          <a href="/news" class="category-card">
+            <div class="category-icon">📰</div>
+            <h3>Industry News</h3>
+            <p>Breaking news and cybersecurity developments</p>
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .main-content {
+    padding: 2rem 0;
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .featured-section {
+    margin-bottom: 5rem;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+
+  .latest-section {
+    margin-bottom: 5rem;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-actions {
+    text-align: center;
+  }
+
+  .categories-section {
+    margin-bottom: 3rem;
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .category-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .category-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(16, 185, 129, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .category-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px #10B981);
+  }
+
+  .category-card h3 {
+    color: #E2E8F0;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+  }
+
+  .category-card p {
+    color: #94A3B8;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .section-title {
+      font-size: 2rem;
+    }
+
+    .featured-grid,
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .categories-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .category-card {
+      padding: 1.5rem;
+    }
+  }
+</style>

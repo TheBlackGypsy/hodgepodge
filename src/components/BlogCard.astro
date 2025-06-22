@@ -1,0 +1,148 @@
+---
+export interface Props {
+  title: string;
+  excerpt: string;
+  category: string;
+  readTime: string;
+  publishDate: string;
+  slug: string;
+  featured?: boolean;
+}
+
+const { title, excerpt, category, readTime, publishDate, slug, featured = false } = Astro.props;
+---
+
+<article class={`blog-card ${featured ? 'featured' : ''}`}>
+  <div class="card-header">
+    <div class="category-tag">{category}</div>
+    <div class="read-time">{readTime}</div>
+  </div>
+  
+  <div class="card-content">
+    <h3 class="card-title">
+      <a href={`/posts/${slug}`}>{title}</a>
+    </h3>
+    <p class="card-excerpt">{excerpt}</p>
+    
+    <div class="card-meta">
+      <time class="publish-date">{publishDate}</time>
+      <a href={`/posts/${slug}`} class="read-more">
+        Read Article →
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .blog-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .blog-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(16, 185, 129, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .blog-card.featured {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .category-tag {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .read-time {
+    color: #64748B;
+    font-size: 0.875rem;
+  }
+
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .card-title {
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    line-height: 1.3;
+  }
+
+  .card-title a {
+    color: #E2E8F0;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .card-title a:hover {
+    color: #10B981;
+  }
+
+  .card-excerpt {
+    color: #94A3B8;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+    line-height: 1.6;
+  }
+
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .publish-date {
+    color: #64748B;
+    font-size: 0.875rem;
+  }
+
+  .read-more {
+    color: #3B82F6;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .read-more:hover {
+    color: #60A5FA;
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 768px) {
+    .blog-card {
+      padding: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+    }
+
+    .card-meta {
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+  }
+</style>

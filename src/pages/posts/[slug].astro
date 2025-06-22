@@ -1,0 +1,275 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getPostBySlug, blogPosts } from '../../data/blogPosts.ts';
+
+export async function getStaticPaths() {
+  return blogPosts.map(post => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
+}
+
+const { slug } = Astro.params;
+const post = getPostBySlug(slug);
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+---
+
+<Layout title={`${post.title} - CyberSec Insights`} description={post.excerpt}>
+  <Header />
+  
+  <main class="post-content">
+    <div class="container">
+      <article class="blog-post">
+        <header class="post-header">
+          <div class="post-meta">
+            <span class="category-tag">{post.category}</span>
+            <span class="read-time">{post.readTime}</span>
+          </div>
+          <h1 class="post-title">{post.title}</h1>
+          <div class="post-info">
+            <div class="author-info">
+              <span class="author">By {post.author}</span>
+              <time class="publish-date">{post.publishDate}</time>
+            </div>
+            <div class="post-tags">
+              {post.tags.map(tag => (
+                <span class="tag">#{tag}</span>
+              ))}
+            </div>
+          </div>
+        </header>
+
+        <div class="post-body">
+          <Fragment set:html={post.content.replace(/\n/g, '<br>')} />
+        </div>
+
+        <footer class="post-footer">
+          <div class="share-section">
+            <h4>Share this article</h4>
+            <div class="share-buttons">
+              <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(Astro.url.href)}`} 
+                 target="_blank" class="share-btn twitter">🐦 Twitter</a>
+              <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(Astro.url.href)}`} 
+                 target="_blank" class="share-btn linkedin">💼 LinkedIn</a>
+              <a href={`mailto:?subject=${encodeURIComponent(post.title)}&body=${encodeURIComponent(Astro.url.href)}`} 
+                 class="share-btn email">📧 Email</a>
+            </div>
+          </div>
+
+          <div class="back-to-blog">
+            <a href="/" class="btn">← Back to Articles</a>
+          </div>
+        </footer>
+      </article>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .post-content {
+    padding: 2rem 0;
+    min-height: 80vh;
+  }
+
+  .blog-post {
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 3rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .post-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .post-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .category-tag {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .read-time {
+    color: #64748B;
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+  }
+
+  .post-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .post-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .author {
+    color: #E2E8F0;
+    font-weight: 500;
+  }
+
+  .publish-date {
+    color: #64748B;
+    font-size: 0.875rem;
+  }
+
+  .post-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .post-body {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #CBD5E1;
+    margin-bottom: 3rem;
+  }
+
+  .post-body :global(h1),
+  .post-body :global(h2),
+  .post-body :global(h3),
+  .post-body :global(h4),
+  .post-body :global(h5),
+  .post-body :global(h6) {
+    color: #E2E8F0;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-body :global(ul),
+  .post-body :global(ol) {
+    margin: 1rem 0;
+    padding-left: 2rem;
+  }
+
+  .post-body :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .post-body :global(strong) {
+    color: #E2E8F0;
+    font-weight: 600;
+  }
+
+  .post-body :global(code) {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: 'Fira Code', monospace;
+  }
+
+  .post-footer {
+    padding-top: 2rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .share-section {
+    margin-bottom: 2rem;
+  }
+
+  .share-section h4 {
+    color: #E2E8F0;
+    margin-bottom: 1rem;
+  }
+
+  .share-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .share-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+  }
+
+  .share-btn:hover {
+    background: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .back-to-blog {
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .blog-post {
+      padding: 2rem 1.5rem;
+    }
+
+    .post-title {
+      font-size: 2rem;
+    }
+
+    .post-info {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .post-body {
+      font-size: 1rem;
+    }
+
+    .share-buttons {
+      justify-content: center;
+    }
+  }
+</style>

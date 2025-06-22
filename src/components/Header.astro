@@ -1,0 +1,160 @@
+---
+const currentPath = Astro.url.pathname;
+---
+
+<header class="header">
+  <nav class="nav container">
+    <div class="nav-brand">
+      <a href="/" class="brand-link">
+        <div class="brand-icon">🔒</div>
+        <span class="brand-text">CyberSec Insights</span>
+      </a>
+    </div>
+    
+    <ul class="nav-menu">
+      <li><a href="/" class={currentPath === '/' ? 'active' : ''}>Home</a></li>
+      <li><a href="/threats" class={currentPath === '/threats' ? 'active' : ''}>Threats</a></li>
+      <li><a href="/defense" class={currentPath === '/defense' ? 'active' : ''}>Defense</a></li>
+      <li><a href="/tutorials" class={currentPath === '/tutorials' ? 'active' : ''}>Tutorials</a></li>
+      <li><a href="/about" class={currentPath === '/about' ? 'active' : ''}>About</a></li>
+    </ul>
+
+    <div class="nav-search">
+      <input type="search" placeholder="Search articles..." class="search-input">
+      <button class="search-btn">🔍</button>
+    </div>
+
+    <button class="mobile-menu-btn">☰</button>
+  </nav>
+</header>
+
+<style>
+  .header {
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+  }
+
+  .nav-brand {
+    flex-shrink: 0;
+  }
+
+  .brand-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #E2E8F0;
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+
+  .brand-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+    filter: drop-shadow(0 0 10px #10B981);
+  }
+
+  .brand-text {
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-menu a {
+    color: #CBD5E1;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .nav-menu a:hover,
+  .nav-menu a.active {
+    color: #10B981;
+    background: rgba(16, 185, 129, 0.1);
+  }
+
+  .nav-search {
+    display: flex;
+    align-items: center;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .search-input {
+    background: none;
+    border: none;
+    color: #E2E8F0;
+    padding: 0.5rem 1rem;
+    outline: none;
+    width: 200px;
+  }
+
+  .search-input::placeholder {
+    color: #64748B;
+  }
+
+  .search-btn {
+    background: none;
+    border: none;
+    color: #64748B;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .search-btn:hover {
+    color: #10B981;
+  }
+
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #E2E8F0;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .nav-menu,
+    .nav-search {
+      display: none;
+    }
+
+    .mobile-menu-btn {
+      display: block;
+    }
+
+    .nav {
+      padding: 0.75rem 0;
+    }
+
+    .brand-text {
+      font-size: 1.1rem;
+    }
+  }
+</style>

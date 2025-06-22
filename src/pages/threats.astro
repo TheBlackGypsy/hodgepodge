@@ -1,0 +1,591 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BlogCard from '../components/BlogCard.astro';
+import { getPostsByCategory } from '../data/blogPosts.ts';
+
+const threatPosts = getPostsByCategory('Threat Analysis');
+
+// Current threat data
+const currentThreats = [
+  {
+    name: "AI-Powered Phishing Campaigns",
+    severity: "Critical",
+    description: "Sophisticated phishing attacks using AI-generated content, deepfake audio, and personalized social engineering tactics.",
+    indicators: ["Highly personalized emails", "Voice cloning in phone calls", "AI-generated fake websites"],
+    mitigation: ["Enhanced email filtering", "Multi-factor authentication", "Employee awareness training"],
+    trend: "increasing"
+  },
+  {
+    name: "Supply Chain Attacks",
+    severity: "High",
+    description: "Targeting software dependencies, third-party vendors, and open-source packages to compromise downstream organizations.",
+    indicators: ["Unexpected software updates", "Unusual network traffic", "Compromised vendor communications"],
+    mitigation: ["Vendor security assessments", "Software bill of materials", "Zero trust architecture"],
+    trend: "increasing"
+  },
+  {
+    name: "Ransomware-as-a-Service (RaaS)",
+    severity: "Critical",
+    description: "Organized ransomware operations offering attack tools and infrastructure to affiliates, lowering barriers to entry.",
+    indicators: ["File encryption patterns", "Ransom notes", "Lateral movement activities"],
+    mitigation: ["Regular backups", "Network segmentation", "Endpoint detection and response"],
+    trend: "stable"
+  },
+  {
+    name: "Cloud Misconfigurations",
+    severity: "High",
+    description: "Exposed cloud storage, misconfigured access controls, and insecure cloud service settings leading to data breaches.",
+    indicators: ["Public S3 buckets", "Overprivileged IAM roles", "Unencrypted data stores"],
+    mitigation: ["Cloud security posture management", "Regular configuration audits", "Least privilege access"],
+    trend: "increasing"
+  },
+  {
+    name: "IoT Botnet Attacks",
+    severity: "Medium",
+    description: "Compromised Internet of Things devices being weaponized for DDoS attacks and cryptocurrency mining.",
+    indicators: ["Unusual device network traffic", "Performance degradation", "Unexpected outbound connections"],
+    mitigation: ["Device firmware updates", "Network monitoring", "IoT device isolation"],
+    trend: "stable"
+  },
+  {
+    name: "Business Email Compromise (BEC)",
+    severity: "High",
+    description: "Sophisticated social engineering attacks targeting executives and finance teams to authorize fraudulent transactions.",
+    indicators: ["Urgent payment requests", "Executive impersonation", "Unusual wire transfer requests"],
+    mitigation: ["Email authentication protocols", "Verification procedures", "Financial controls"],
+    trend: "increasing"
+  },
+  {
+    name: "Zero-Day Exploits",
+    severity: "Critical",
+    description: "Attacks exploiting previously unknown vulnerabilities in software before patches are available.",
+    indicators: ["Unusual system behavior", "Unexpected network connections", "Unknown processes"],
+    mitigation: ["Behavioral monitoring", "Virtual patching", "Threat intelligence feeds"],
+    trend: "stable"
+  },
+  {
+    name: "Insider Threats",
+    severity: "Medium",
+    description: "Malicious or negligent actions by employees, contractors, or business partners with authorized access.",
+    indicators: ["Unusual data access patterns", "After-hours activity", "Data exfiltration attempts"],
+    mitigation: ["User behavior analytics", "Access controls", "Regular security training"],
+    trend: "stable"
+  }
+];
+
+const emergingThreats = [
+  {
+    name: "Quantum Computing Threats",
+    description: "Future quantum computers could break current encryption methods, requiring quantum-resistant cryptography.",
+    timeframe: "5-10 years",
+    impact: "Cryptographic systems"
+  },
+  {
+    name: "AI Model Poisoning",
+    description: "Attacks targeting machine learning models during training to introduce backdoors or bias.",
+    timeframe: "1-2 years",
+    impact: "AI/ML systems"
+  },
+  {
+    name: "5G Network Vulnerabilities",
+    description: "New attack vectors emerging from 5G infrastructure and increased connectivity.",
+    timeframe: "2-3 years",
+    impact: "Mobile and IoT networks"
+  },
+  {
+    name: "Deepfake Disinformation",
+    description: "AI-generated fake audio and video content used for social engineering and fraud.",
+    timeframe: "Current",
+    impact: "Social engineering"
+  }
+];
+---
+
+<Layout title="Current Cybersecurity Threats - CyberSec Insights" description="Stay informed about the latest cybersecurity threats, attack vectors, and emerging risks that organizations need to monitor and defend against.">
+  <Header />
+  
+  <main class="threats-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Current Cybersecurity Threats</h1>
+        <p class="page-subtitle">
+          Stay ahead of evolving threats with real-time intelligence and actionable defense strategies
+        </p>
+        <div class="threat-level-indicator">
+          <span class="current-level critical">Current Threat Level: HIGH</span>
+          <span class="last-updated">Last Updated: March 15, 2025</span>
+        </div>
+      </div>
+
+      <!-- Threat Dashboard -->
+      <section class="threat-dashboard">
+        <h2 class="section-title">Active Threat Landscape</h2>
+        <div class="threats-grid">
+          {currentThreats.map(threat => (
+            <div class={`threat-card ${threat.severity.toLowerCase()}`}>
+              <div class="threat-header">
+                <h3 class="threat-name">{threat.name}</h3>
+                <div class="threat-badges">
+                  <span class={`severity-badge ${threat.severity.toLowerCase()}`}>{threat.severity}</span>
+                  <span class={`trend-badge ${threat.trend}`}>
+                    {threat.trend === 'increasing' ? '📈' : threat.trend === 'decreasing' ? '📉' : '➡️'}
+                    {threat.trend}
+                  </span>
+                </div>
+              </div>
+              
+              <p class="threat-description">{threat.description}</p>
+              
+              <div class="threat-details">
+                <div class="detail-section">
+                  <h4>🔍 Indicators</h4>
+                  <ul>
+                    {threat.indicators.map(indicator => (
+                      <li>{indicator}</li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div class="detail-section">
+                  <h4>🛡️ Mitigation</h4>
+                  <ul>
+                    {threat.mitigation.map(measure => (
+                      <li>{measure}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Emerging Threats -->
+      <section class="emerging-threats">
+        <h2 class="section-title">Emerging Threats to Watch</h2>
+        <div class="emerging-grid">
+          {emergingThreats.map(threat => (
+            <div class="emerging-card">
+              <h3>{threat.name}</h3>
+              <p>{threat.description}</p>
+              <div class="emerging-meta">
+                <span class="timeframe">⏱️ {threat.timeframe}</span>
+                <span class="impact">🎯 {threat.impact}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Threat Intelligence Resources -->
+      <section class="resources-section">
+        <h2 class="section-title">Threat Intelligence Resources</h2>
+        <div class="resources-grid">
+          <div class="resource-card">
+            <div class="resource-icon">📊</div>
+            <h3>Threat Feeds</h3>
+            <p>Real-time threat intelligence from global security organizations</p>
+            <ul>
+              <li>MITRE ATT&CK Framework</li>
+              <li>CISA Cybersecurity Advisories</li>
+              <li>FBI IC3 Reports</li>
+            </ul>
+          </div>
+          
+          <div class="resource-card">
+            <div class="resource-icon">🔬</div>
+            <h3>Analysis Tools</h3>
+            <p>Professional tools for threat hunting and analysis</p>
+            <ul>
+              <li>VirusTotal</li>
+              <li>Hybrid Analysis</li>
+              <li>YARA Rules</li>
+            </ul>
+          </div>
+          
+          <div class="resource-card">
+            <div class="resource-icon">🚨</div>
+            <h3>Alert Systems</h3>
+            <p>Early warning systems for emerging threats</p>
+            <ul>
+              <li>US-CERT Alerts</li>
+              <li>ICS-CERT Advisories</li>
+              <li>Vendor Security Bulletins</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Articles -->
+      {threatPosts.length > 0 && (
+        <section class="related-articles">
+          <h2 class="section-title">Latest Threat Analysis Articles</h2>
+          <div class="articles-grid">
+            {threatPosts.map(post => (
+              <BlogCard {...post} />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .threats-content {
+    padding: 2rem 0;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 3rem 0;
+  }
+
+  .page-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-subtitle {
+    font-size: 1.25rem;
+    color: #94A3B8;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+
+  .threat-level-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .current-level {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .current-level.critical {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+    color: white;
+  }
+
+  .last-updated {
+    color: #64748B;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #E2E8F0;
+  }
+
+  .threat-dashboard {
+    margin-bottom: 5rem;
+  }
+
+  .threats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+
+  .threat-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .threat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .threat-card.critical {
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .threat-card.high {
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  .threat-card.medium {
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .threat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .threat-name {
+    color: #E2E8F0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    flex: 1;
+  }
+
+  .threat-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .severity-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .severity-badge.critical {
+    background: #EF4444;
+    color: white;
+  }
+
+  .severity-badge.high {
+    background: #F59E0B;
+    color: white;
+  }
+
+  .severity-badge.medium {
+    background: #3B82F6;
+    color: white;
+  }
+
+  .trend-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    background: rgba(148, 163, 184, 0.2);
+    color: #94A3B8;
+  }
+
+  .trend-badge.increasing {
+    background: rgba(239, 68, 68, 0.2);
+    color: #FCA5A5;
+  }
+
+  .threat-description {
+    color: #CBD5E1;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .threat-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .detail-section h4 {
+    color: #E2E8F0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .detail-section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .detail-section li {
+    color: #94A3B8;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .detail-section li::before {
+    content: "•";
+    color: #10B981;
+    position: absolute;
+    left: 0;
+  }
+
+  .emerging-threats {
+    margin-bottom: 5rem;
+  }
+
+  .emerging-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .emerging-card {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .emerging-card h3 {
+    color: #E2E8F0;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .emerging-card p {
+    color: #94A3B8;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .emerging-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .timeframe,
+  .impact {
+    font-size: 0.75rem;
+    color: #64748B;
+    background: rgba(148, 163, 184, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  .resources-section {
+    margin-bottom: 5rem;
+  }
+
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .resource-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s ease;
+  }
+
+  .resource-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .resource-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px #10B981);
+  }
+
+  .resource-card h3 {
+    color: #E2E8F0;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+  }
+
+  .resource-card p {
+    color: #94A3B8;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .resource-card ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+  }
+
+  .resource-card li {
+    color: #CBD5E1;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .resource-card li::before {
+    content: "→";
+    color: #10B981;
+    position: absolute;
+    left: 0;
+  }
+
+  .related-articles {
+    margin-bottom: 3rem;
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .threat-level-indicator {
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .threats-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .threat-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .threat-badges {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .threat-details {
+      grid-template-columns: 1fr;
+    }
+
+    .emerging-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .resources-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

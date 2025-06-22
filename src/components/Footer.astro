@@ -1,0 +1,200 @@
+---
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <div class="footer-brand">
+          <div class="brand-icon">🔒</div>
+          <span class="brand-text">CyberSec Insights</span>
+        </div>
+        <p class="footer-description">
+          Your trusted source for cybersecurity insights, threat intelligence, 
+          and defense strategies in the ever-evolving digital landscape.
+        </p>
+        <div class="social-links">
+          <a href="#" aria-label="Twitter">🐦</a>
+          <a href="#" aria-label="LinkedIn">💼</a>
+          <a href="#" aria-label="GitHub">🐙</a>
+          <a href="#" aria-label="RSS">📡</a>
+        </div>
+      </div>
+
+      <div class="footer-section">
+        <h4>Categories</h4>
+        <ul class="footer-links">
+          <li><a href="/threats">Threat Analysis</a></li>
+          <li><a href="/defense">Defense Strategies</a></li>
+          <li><a href="/tutorials">Security Tutorials</a></li>
+          <li><a href="/news">Industry News</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4>Resources</h4>
+        <ul class="footer-links">
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-section">
+        <h4>Newsletter</h4>
+        <p>Stay updated with the latest cybersecurity insights</p>
+        <form class="newsletter-form">
+          <input type="email" placeholder="Enter your email" required>
+          <button type="submit" class="btn">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2025 CyberSec Insights. All rights reserved.</p>
+      <p>Securing the digital world, one article at a time.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: rgba(15, 23, 42, 0.95);
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+    margin-top: 4rem;
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    gap: 3rem;
+    padding: 3rem 0;
+  }
+
+  .footer-section h4 {
+    color: #E2E8F0;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .brand-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+    filter: drop-shadow(0 0 10px #10B981);
+  }
+
+  .brand-text {
+    font-weight: 700;
+    font-size: 1.25rem;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .footer-description {
+    color: #94A3B8;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(30, 41, 59, 0.8);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+  }
+
+  .social-links a:hover {
+    background: rgba(16, 185, 129, 0.2);
+    transform: translateY(-2px);
+  }
+
+  .footer-links {
+    list-style: none;
+  }
+
+  .footer-links li {
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-links a {
+    color: #94A3B8;
+    transition: color 0.2s ease;
+  }
+
+  .footer-links a:hover {
+    color: #10B981;
+  }
+
+  .newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .newsletter-form input {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    color: #E2E8F0;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .newsletter-form input:focus {
+    border-color: #10B981;
+  }
+
+  .newsletter-form input::placeholder {
+    color: #64748B;
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+    padding: 2rem 0;
+    text-align: center;
+    color: #64748B;
+  }
+
+  .footer-bottom p {
+    margin-bottom: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .footer-content {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+
+    .social-links {
+      justify-content: center;
+    }
+
+    .newsletter-form {
+      max-width: 300px;
+      margin: 1rem auto 0;
+    }
+  }
+</style>

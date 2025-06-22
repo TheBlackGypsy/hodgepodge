@@ -1,0 +1,393 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="About Us - CyberSec Insights" description="Learn about our mission to provide expert cybersecurity insights and professional defense strategies.">
+  <Header />
+  
+  <main class="about-content">
+    <div class="container">
+      <div class="about-hero">
+        <h1>About CyberSec Insights</h1>
+        <p class="hero-subtitle">
+          Empowering organizations with expert cybersecurity knowledge and cutting-edge defense strategies
+        </p>
+      </div>
+
+      <section class="mission-section">
+        <div class="content-grid">
+          <div class="text-content">
+            <h2>Our Mission</h2>
+            <p>
+              At CyberSec Insights, we bridge the gap between complex cybersecurity research and practical implementation. 
+              Our mission is to democratize access to expert-level security knowledge, enabling organizations of all sizes 
+              to defend against evolving cyber threats.
+            </p>
+            <p>
+              We believe that cybersecurity is not just about technology—it's about people, processes, and continuous learning. 
+              Through our comprehensive content, we aim to build a more secure digital ecosystem for everyone.
+            </p>
+          </div>
+          <div class="image-content">
+            <img src="https://images.pexels.com/photos/60504/security-protection-anti-virus-software-60504.jpeg?auto=compress&cs=tinysrgb&w=600" 
+                 alt="Cybersecurity professionals at work" class="about-image">
+          </div>
+        </div>
+      </section>
+
+      <section class="team-section">
+        <h2>Our Expert</h2>
+        <div class="team-grid">
+          <div class="team-member featured">
+            <div class="member-avatar">👨‍💻</div>
+            <h3>Quintin McFadden</h3>
+            <p class="member-role">Lead Cybersecurity Expert</p>
+            <p class="member-bio">
+              Quintin brings 5 years of focused experience in cybersecurity, specializing in threat analysis, 
+              enterprise security architecture, and incident response. He holds multiple industry certifications 
+              including CISSP, CISM, and CEH, and has rapidly advanced through security roles at organizations 
+              ranging from innovative startups to established enterprises. His expertise spans advanced persistent 
+              threats, zero trust implementation, cloud security, and emerging AI-powered attack vectors.
+            </p>
+            <div class="member-specialties">
+              <span class="specialty">Threat Intelligence</span>
+              <span class="specialty">Zero Trust Architecture</span>
+              <span class="specialty">Incident Response</span>
+              <span class="specialty">Cloud Security</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="values-section">
+        <h2>Our Values</h2>
+        <div class="values-grid">
+          <div class="value-card">
+            <div class="value-icon">🎯</div>
+            <h3>Practical Focus</h3>
+            <p>We provide actionable insights that can be immediately implemented in real-world environments.</p>
+          </div>
+          
+          <div class="value-card">
+            <div class="value-icon">🔬</div>
+            <h3>Research-Driven</h3>
+            <p>Our content is backed by rigorous research and validated through practical testing and implementation.</p>
+          </div>
+          
+          <div class="value-card">
+            <div class="value-icon">🤝</div>
+            <h3>Community First</h3>
+            <p>We believe in knowledge sharing and building a stronger cybersecurity community through collaboration.</p>
+          </div>
+          
+          <div class="value-card">
+            <div class="value-icon">⚡</div>
+            <h3>Stay Current</h3>
+            <p>Cybersecurity evolves rapidly. We ensure our content reflects the latest threats and defense strategies.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section">
+        <div class="contact-content">
+          <h2>Get In Touch</h2>
+          <p>
+            Have questions about cybersecurity? Want to suggest a topic? We'd love to hear from you.
+          </p>
+          <div class="contact-methods">
+            <a href="mailto:contact@cybersec-insights.com" class="contact-method">
+              <span class="contact-icon">📧</span>
+              <span>contact@cybersec-insights.com</span>
+            </a>
+            <a href="https://twitter.com/cybersecinsights" class="contact-method">
+              <span class="contact-icon">🐦</span>
+              <span>@cybersecinsights</span>
+            </a>
+            <a href="https://linkedin.com/company/cybersec-insights" class="contact-method">
+              <span class="contact-icon">💼</span>
+              <span>LinkedIn</span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .about-content {
+    padding: 2rem 0;
+  }
+
+  .about-hero {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 3rem 0;
+  }
+
+  .about-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: #94A3B8;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .mission-section {
+    margin-bottom: 5rem;
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .text-content h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #E2E8F0;
+  }
+
+  .text-content p {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #CBD5E1;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .team-section {
+    margin-bottom: 5rem;
+  }
+
+  .team-section h2 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #E2E8F0;
+  }
+
+  .team-grid {
+    display: flex;
+    justify-content: center;
+  }
+
+  .team-member {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 3rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s ease;
+    max-width: 500px;
+  }
+
+  .team-member.featured {
+    border-color: rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+  }
+
+  .team-member:hover {
+    transform: translateY(-4px);
+  }
+
+  .member-avatar {
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 20px #10B981);
+  }
+
+  .team-member h3 {
+    color: #E2E8F0;
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .member-role {
+    color: #10B981;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+  }
+
+  .member-bio {
+    color: #94A3B8;
+    line-height: 1.6;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .member-specialties {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .specialty {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10B981;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .values-section {
+    margin-bottom: 5rem;
+  }
+
+  .values-section h2 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #E2E8F0;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+
+  .value-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s ease;
+  }
+
+  .value-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .value-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px #10B981);
+  }
+
+  .value-card h3 {
+    color: #E2E8F0;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .value-card p {
+    color: #94A3B8;
+    line-height: 1.6;
+    font-size: 0.9rem;
+  }
+
+  .contact-section {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 3rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+  }
+
+  .contact-content h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #E2E8F0;
+  }
+
+  .contact-content p {
+    font-size: 1.125rem;
+    color: #94A3B8;
+    margin-bottom: 2rem;
+  }
+
+  .contact-methods {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .contact-method {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .contact-method:hover {
+    background: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+    color: #60A5FA;
+  }
+
+  .contact-icon {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 768px) {
+    .about-hero h1 {
+      font-size: 2rem;
+    }
+
+    .content-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .team-member {
+      padding: 2rem;
+    }
+
+    .member-avatar {
+      font-size: 4rem;
+    }
+
+    .values-grid {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    .contact-methods {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .contact-section {
+      padding: 2rem;
+    }
+  }
+</style>
