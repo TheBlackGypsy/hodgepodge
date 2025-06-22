@@ -44,10 +44,36 @@
       <div class="footer-section">
         <h4>Newsletter</h4>
         <p>Stay updated with the latest cybersecurity insights</p>
-        <form class="newsletter-form">
-          <input type="email" placeholder="Enter your email" required>
-          <button type="submit" class="btn">Subscribe</button>
+        <form class="newsletter-form" id="footerNewsletterForm">
+          <div class="input-wrapper">
+            <input 
+              type="email" 
+              id="footerEmailInput"
+              placeholder="Enter your email" 
+              required
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+            >
+            <div class="footer-validation" id="footerEmailValidation"></div>
+          </div>
+          <button type="submit" class="btn footer-subscribe-btn" id="footerSubscribeBtn">
+            <span class="btn-text">Subscribe</span>
+            <span class="btn-loading hidden">
+              <span class="spinner"></span>
+            </span>
+          </button>
         </form>
+        
+        <!-- Footer Messages -->
+        <div class="footer-message-container">
+          <div class="footer-success-message hidden" id="footerSuccessMessage">
+            <span class="message-icon">✅</span>
+            <span class="message-text">Subscribed successfully!</span>
+          </div>
+          <div class="footer-error-message hidden" id="footerErrorMessage">
+            <span class="message-icon">❌</span>
+            <span class="message-text">Please try again.</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -57,6 +83,128 @@
     </div>
   </div>
 </footer>
+
+<script>
+  // Footer newsletter functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const footerForm = document.getElementById('footerNewsletterForm');
+    const footerEmailInput = document.getElementById('footerEmailInput');
+    const footerSubscribeBtn = document.getElementById('footerSubscribeBtn');
+    const footerBtnText = footerSubscribeBtn?.querySelector('.btn-text');
+    const footerBtnLoading = footerSubscribeBtn?.querySelector('.btn-loading');
+    const footerSuccessMessage = document.getElementById('footerSuccessMessage');
+    const footerErrorMessage = document.getElementById('footerErrorMessage');
+    const footerEmailValidation = document.getElementById('footerEmailValidation');
+    
+    // Email validation function
+    function validateEmail(email) {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return emailRegex.test(email);
+    }
+    
+    // Real-time email validation for footer
+    if (footerEmailInput) {
+      footerEmailInput.addEventListener('input', function() {
+        const email = this.value.trim();
+        
+        if (email === '') {
+          footerEmailValidation.textContent = '';
+          footerEmailValidation.className = 'footer-validation';
+          return;
+        }
+        
+        if (validateEmail(email)) {
+          footerEmailValidation.textContent = '✓';
+          footerEmailValidation.className = 'footer-validation valid';
+        } else {
+          footerEmailValidation.textContent = '✗';
+          footerEmailValidation.className = 'footer-validation invalid';
+        }
+      });
+    }
+    
+    // Footer form submission
+    if (footerForm) {
+      footerForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = footerEmailInput.value.trim();
+        
+        if (!validateEmail(email)) {
+          showFooterError('Invalid email');
+          footerEmailInput.focus();
+          return;
+        }
+        
+        // Show loading state
+        setFooterLoadingState(true);
+        hideFooterMessages();
+        
+        try {
+          // Simulate API call
+          await simulateSubscription(email);
+          showFooterSuccess('Subscribed!');
+          footerForm.reset();
+          footerEmailValidation.textContent = '';
+          footerEmailValidation.className = 'footer-validation';
+        } catch (error) {
+          showFooterError('Try again');
+        } finally {
+          setFooterLoadingState(false);
+        }
+      });
+    }
+    
+    // Footer helper functions
+    function setFooterLoadingState(loading) {
+      if (loading && footerSubscribeBtn) {
+        footerSubscribeBtn.disabled = true;
+        footerBtnText?.classList.add('hidden');
+        footerBtnLoading?.classList.remove('hidden');
+      } else if (footerSubscribeBtn) {
+        footerSubscribeBtn.disabled = false;
+        footerBtnText?.classList.remove('hidden');
+        footerBtnLoading?.classList.add('hidden');
+      }
+    }
+    
+    function showFooterSuccess(message) {
+      if (footerSuccessMessage) {
+        footerSuccessMessage.querySelector('.message-text').textContent = message;
+        footerSuccessMessage.classList.remove('hidden');
+        footerErrorMessage?.classList.add('hidden');
+        setTimeout(() => footerSuccessMessage.classList.add('hidden'), 3000);
+      }
+    }
+    
+    function showFooterError(message) {
+      if (footerErrorMessage) {
+        footerErrorMessage.querySelector('.message-text').textContent = message;
+        footerErrorMessage.classList.remove('hidden');
+        footerSuccessMessage?.classList.add('hidden');
+        setTimeout(() => footerErrorMessage.classList.add('hidden'), 3000);
+      }
+    }
+    
+    function hideFooterMessages() {
+      footerSuccessMessage?.classList.add('hidden');
+      footerErrorMessage?.classList.add('hidden');
+    }
+    
+    // Simulate newsletter subscription
+    async function simulateSubscription(email) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (Math.random() > 0.1) {
+            resolve({ success: true, email });
+          } else {
+            reject(new Error('Subscription failed'));
+          }
+        }, 1000);
+      });
+    }
+  });
+</script>
 
 <style>
   .footer {
@@ -152,22 +300,119 @@
     margin-top: 1rem;
   }
 
+  .input-wrapper {
+    position: relative;
+  }
+
   .newsletter-form input {
+    width: 100%;
     background: rgba(30, 41, 59, 0.8);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 0.5rem;
     padding: 0.75rem;
     color: #E2E8F0;
     outline: none;
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
   }
 
   .newsletter-form input:focus {
     border-color: #10B981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
   }
 
   .newsletter-form input::placeholder {
     color: #64748B;
+  }
+
+  .footer-validation {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .footer-validation.valid {
+    color: #10B981;
+  }
+
+  .footer-validation.invalid {
+    color: #EF4444;
+  }
+
+  .footer-subscribe-btn {
+    position: relative;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .footer-subscribe-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .btn-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .footer-message-container {
+    margin-top: 0.5rem;
+  }
+
+  .footer-success-message,
+  .footer-error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    animation: slideIn 0.3s ease;
+  }
+
+  .footer-success-message {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+  }
+
+  .footer-error-message {
+    background: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .footer-bottom {
