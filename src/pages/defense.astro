@@ -1,0 +1,918 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BlogCard from '../components/BlogCard.astro';
+import { getPostsByCategory } from '../data/blogPosts.ts';
+
+const defensePosts = getPostsByCategory('Defense');
+
+// Cybersecurity Certifications
+const certifications = [
+  {
+    name: "CompTIA Security+",
+    level: "Entry Level",
+    description: "Foundation-level certification covering basic security concepts, network security, and risk management.",
+    skills: ["Network Security", "Risk Management", "Cryptography", "Identity Management"],
+    timeToComplete: "3-6 months",
+    cost: "$370",
+    renewal: "3 years",
+    difficulty: "Beginner",
+    provider: "CompTIA"
+  },
+  {
+    name: "CompTIA A+",
+    level: "Entry Level", 
+    description: "Hardware and software troubleshooting certification that provides IT fundamentals for security careers.",
+    skills: ["Hardware Troubleshooting", "Operating Systems", "Mobile Devices", "Networking"],
+    timeToComplete: "3-4 months",
+    cost: "$358 (per exam)",
+    renewal: "3 years",
+    difficulty: "Beginner",
+    provider: "CompTIA"
+  },
+  {
+    name: "CompTIA Linux+",
+    level: "Intermediate",
+    description: "Linux system administration certification essential for security professionals working with Linux environments.",
+    skills: ["Linux Administration", "Command Line", "System Security", "Scripting"],
+    timeToComplete: "4-6 months",
+    cost: "$370",
+    renewal: "3 years",
+    difficulty: "Intermediate",
+    provider: "CompTIA"
+  },
+  {
+    name: "ITIL Foundation",
+    level: "Entry Level",
+    description: "IT service management framework certification focusing on best practices for IT service delivery.",
+    skills: ["Service Management", "Process Improvement", "Incident Management", "Change Management"],
+    timeToComplete: "1-2 months",
+    cost: "$315",
+    renewal: "3 years",
+    difficulty: "Beginner",
+    provider: "AXELOS"
+  },
+  {
+    name: "CISSP",
+    level: "Advanced",
+    description: "Advanced certification for experienced security professionals covering eight security domains.",
+    skills: ["Security Architecture", "Risk Management", "Cryptography", "Security Operations"],
+    timeToComplete: "6-12 months",
+    cost: "$749",
+    renewal: "3 years",
+    difficulty: "Advanced",
+    provider: "(ISC)²"
+  },
+  {
+    name: "CEH (Certified Ethical Hacker)",
+    level: "Intermediate",
+    description: "Hands-on certification teaching ethical hacking techniques and penetration testing methodologies.",
+    skills: ["Penetration Testing", "Vulnerability Assessment", "Social Engineering", "Malware Analysis"],
+    timeToComplete: "4-6 months",
+    cost: "$1,199",
+    renewal: "3 years",
+    difficulty: "Intermediate",
+    provider: "EC-Council"
+  },
+  {
+    name: "CISM",
+    level: "Advanced",
+    description: "Management-level certification focusing on information security governance and risk management.",
+    skills: ["Security Governance", "Risk Management", "Incident Response", "Security Program Development"],
+    timeToComplete: "6-9 months",
+    cost: "$760",
+    renewal: "3 years",
+    difficulty: "Advanced",
+    provider: "ISACA"
+  },
+  {
+    name: "GSEC",
+    level: "Intermediate",
+    description: "Hands-on security certification covering practical security skills and defensive techniques.",
+    skills: ["Security Fundamentals", "Network Security", "Incident Handling", "Vulnerability Management"],
+    timeToComplete: "4-8 months",
+    cost: "$7,000+",
+    renewal: "4 years",
+    difficulty: "Intermediate",
+    provider: "SANS"
+  }
+];
+
+// Defense Strategies
+const defenseStrategies = [
+  {
+    category: "Network Security",
+    icon: "🌐",
+    strategies: [
+      {
+        name: "Network Segmentation",
+        description: "Divide networks into smaller, isolated segments to limit attack spread and contain breaches.",
+        implementation: ["Use VLANs and subnets", "Implement micro-segmentation", "Deploy network access control (NAC)"],
+        effectiveness: "High"
+      },
+      {
+        name: "Intrusion Detection Systems (IDS)",
+        description: "Monitor network traffic for suspicious activities and potential security breaches.",
+        implementation: ["Deploy network-based IDS", "Configure signature-based detection", "Implement behavioral analysis"],
+        effectiveness: "High"
+      },
+      {
+        name: "Firewall Configuration",
+        description: "Properly configure firewalls to block unauthorized access and filter malicious traffic.",
+        implementation: ["Default deny policies", "Regular rule reviews", "Application-layer filtering"],
+        effectiveness: "High"
+      }
+    ]
+  },
+  {
+    category: "Endpoint Protection",
+    icon: "💻",
+    strategies: [
+      {
+        name: "Endpoint Detection and Response (EDR)",
+        description: "Advanced endpoint monitoring and automated response to threats on individual devices.",
+        implementation: ["Deploy EDR agents", "Configure behavioral monitoring", "Automate threat response"],
+        effectiveness: "Very High"
+      },
+      {
+        name: "Antivirus and Anti-malware",
+        description: "Traditional signature-based protection against known malware and viruses.",
+        implementation: ["Real-time scanning", "Regular signature updates", "Heuristic analysis"],
+        effectiveness: "Medium"
+      },
+      {
+        name: "Application Whitelisting",
+        description: "Only allow approved applications to run, blocking all unauthorized software execution.",
+        implementation: ["Create approved software lists", "Block unknown executables", "Regular whitelist updates"],
+        effectiveness: "Very High"
+      }
+    ]
+  },
+  {
+    category: "Identity & Access Management",
+    icon: "🔐",
+    strategies: [
+      {
+        name: "Multi-Factor Authentication (MFA)",
+        description: "Require multiple forms of verification before granting access to systems and data.",
+        implementation: ["SMS/Email codes", "Authenticator apps", "Hardware tokens", "Biometric verification"],
+        effectiveness: "Very High"
+      },
+      {
+        name: "Privileged Access Management (PAM)",
+        description: "Control and monitor access to critical systems and administrative accounts.",
+        implementation: ["Just-in-time access", "Session recording", "Password vaulting", "Access reviews"],
+        effectiveness: "High"
+      },
+      {
+        name: "Zero Trust Architecture",
+        description: "Never trust, always verify - authenticate and authorize every access request.",
+        implementation: ["Identity verification", "Device compliance", "Least privilege access", "Continuous monitoring"],
+        effectiveness: "Very High"
+      }
+    ]
+  },
+  {
+    category: "Data Protection",
+    icon: "🛡️",
+    strategies: [
+      {
+        name: "Data Encryption",
+        description: "Encrypt sensitive data both at rest and in transit to prevent unauthorized access.",
+        implementation: ["AES-256 encryption", "TLS/SSL protocols", "Database encryption", "File-level encryption"],
+        effectiveness: "Very High"
+      },
+      {
+        name: "Data Loss Prevention (DLP)",
+        description: "Monitor and prevent unauthorized data exfiltration and sharing.",
+        implementation: ["Content inspection", "Policy enforcement", "User activity monitoring", "Data classification"],
+        effectiveness: "High"
+      },
+      {
+        name: "Regular Backups",
+        description: "Maintain secure, tested backups to recover from ransomware and data corruption.",
+        implementation: ["3-2-1 backup strategy", "Offline backups", "Regular testing", "Immutable backups"],
+        effectiveness: "High"
+      }
+    ]
+  },
+  {
+    category: "Security Awareness",
+    icon: "🎓",
+    strategies: [
+      {
+        name: "Employee Training",
+        description: "Regular security awareness training to help employees identify and avoid threats.",
+        implementation: ["Phishing simulations", "Security workshops", "Policy training", "Incident reporting"],
+        effectiveness: "High"
+      },
+      {
+        name: "Social Engineering Defense",
+        description: "Train staff to recognize and respond to social engineering attacks.",
+        implementation: ["Verification procedures", "Suspicious contact reporting", "Authority validation", "Information sharing policies"],
+        effectiveness: "High"
+      },
+      {
+        name: "Incident Response Training",
+        description: "Prepare teams to respond quickly and effectively to security incidents.",
+        implementation: ["Response procedures", "Communication protocols", "Tabletop exercises", "Role assignments"],
+        effectiveness: "High"
+      }
+    ]
+  },
+  {
+    category: "Vulnerability Management",
+    icon: "🔍",
+    strategies: [
+      {
+        name: "Regular Security Assessments",
+        description: "Conduct periodic vulnerability scans and penetration tests to identify weaknesses.",
+        implementation: ["Automated scanning", "Manual testing", "Third-party assessments", "Remediation tracking"],
+        effectiveness: "High"
+      },
+      {
+        name: "Patch Management",
+        description: "Systematically apply security updates and patches to all systems and software.",
+        implementation: ["Automated patching", "Testing procedures", "Emergency patches", "Patch tracking"],
+        effectiveness: "Very High"
+      },
+      {
+        name: "Configuration Management",
+        description: "Maintain secure configurations and monitor for unauthorized changes.",
+        implementation: ["Security baselines", "Configuration monitoring", "Change control", "Compliance scanning"],
+        effectiveness: "High"
+      }
+    ]
+  }
+];
+
+// Quick Defense Checklist
+const quickDefenseChecklist = [
+  "Enable automatic security updates",
+  "Use strong, unique passwords with a password manager",
+  "Enable multi-factor authentication on all accounts",
+  "Keep software and operating systems updated",
+  "Use reputable antivirus software",
+  "Regular data backups to offline storage",
+  "Be cautious with email attachments and links",
+  "Use secure Wi-Fi networks and VPNs",
+  "Limit administrative privileges",
+  "Monitor financial accounts regularly",
+  "Use encrypted communication tools",
+  "Implement network segmentation",
+  "Train employees on security awareness",
+  "Develop an incident response plan",
+  "Regular security assessments and audits"
+];
+---
+
+<Layout title="Defense Strategies & Certifications - CyberSec Insights" description="Comprehensive guide to cybersecurity defense strategies, professional certifications, and practical protection methods against black hat hackers.">
+  <Header />
+  
+  <main class="defense-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Cybersecurity Defense Arsenal</h1>
+        <p class="page-subtitle">
+          Professional certifications, proven strategies, and practical defenses against black hat hackers
+        </p>
+      </div>
+
+      <!-- Quick Defense Checklist -->
+      <section class="quick-defense">
+        <h2 class="section-title">🚀 Quick Defense Checklist</h2>
+        <div class="checklist-container">
+          <p class="checklist-intro">Essential security measures every organization should implement immediately:</p>
+          <div class="checklist-grid">
+            {quickDefenseChecklist.map(item => (
+              <div class="checklist-item">
+                <span class="checkbox">✅</span>
+                <span class="item-text">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- Cybersecurity Certifications -->
+      <section class="certifications-section">
+        <h2 class="section-title">🎓 Professional Cybersecurity Certifications</h2>
+        <p class="section-intro">
+          Build your cybersecurity expertise with industry-recognized certifications that validate your skills and advance your career.
+        </p>
+        
+        <div class="certifications-grid">
+          {certifications.map(cert => (
+            <div class={`cert-card ${cert.difficulty.toLowerCase()}`}>
+              <div class="cert-header">
+                <h3 class="cert-name">{cert.name}</h3>
+                <div class="cert-badges">
+                  <span class={`level-badge ${cert.difficulty.toLowerCase()}`}>{cert.level}</span>
+                  <span class="provider-badge">{cert.provider}</span>
+                </div>
+              </div>
+              
+              <p class="cert-description">{cert.description}</p>
+              
+              <div class="cert-details">
+                <div class="detail-row">
+                  <span class="detail-label">⏱️ Study Time:</span>
+                  <span class="detail-value">{cert.timeToComplete}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">💰 Cost:</span>
+                  <span class="detail-value">{cert.cost}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">🔄 Renewal:</span>
+                  <span class="detail-value">{cert.renewal}</span>
+                </div>
+              </div>
+              
+              <div class="cert-skills">
+                <h4>Key Skills:</h4>
+                <div class="skills-list">
+                  {cert.skills.map(skill => (
+                    <span class="skill-tag">{skill}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Defense Strategies -->
+      <section class="strategies-section">
+        <h2 class="section-title">🛡️ Defense Strategies Against Black Hat Hackers</h2>
+        <p class="section-intro">
+          Comprehensive defense strategies organized by security domain to protect against sophisticated cyber attacks.
+        </p>
+        
+        {defenseStrategies.map(category => (
+          <div class="strategy-category">
+            <h3 class="category-title">
+              <span class="category-icon">{category.icon}</span>
+              {category.category}
+            </h3>
+            
+            <div class="strategies-grid">
+              {category.strategies.map(strategy => (
+                <div class="strategy-card">
+                  <div class="strategy-header">
+                    <h4 class="strategy-name">{strategy.name}</h4>
+                    <span class={`effectiveness-badge ${strategy.effectiveness.toLowerCase().replace(' ', '-')}`}>
+                      {strategy.effectiveness} Effectiveness
+                    </span>
+                  </div>
+                  
+                  <p class="strategy-description">{strategy.description}</p>
+                  
+                  <div class="implementation-section">
+                    <h5>Implementation Steps:</h5>
+                    <ul class="implementation-list">
+                      {strategy.implementation.map(step => (
+                        <li>{step}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
+
+      <!-- Advanced Defense Techniques -->
+      <section class="advanced-defense">
+        <h2 class="section-title">⚡ Advanced Defense Techniques</h2>
+        <div class="advanced-grid">
+          <div class="advanced-card">
+            <div class="advanced-icon">🤖</div>
+            <h3>AI-Powered Security</h3>
+            <p>Leverage machine learning and artificial intelligence for threat detection and automated response.</p>
+            <ul>
+              <li>Behavioral analytics</li>
+              <li>Anomaly detection</li>
+              <li>Automated threat hunting</li>
+              <li>Predictive security</li>
+            </ul>
+          </div>
+          
+          <div class="advanced-card">
+            <div class="advanced-icon">🕸️</div>
+            <h3>Deception Technology</h3>
+            <p>Deploy honeypots and decoy systems to detect and misdirect attackers.</p>
+            <ul>
+              <li>Honeypots and honeynets</li>
+              <li>Decoy credentials</li>
+              <li>Fake network services</li>
+              <li>Breadcrumb trails</li>
+            </ul>
+          </div>
+          
+          <div class="advanced-card">
+            <div class="advanced-icon">🔬</div>
+            <h3>Threat Intelligence</h3>
+            <p>Proactive threat intelligence gathering and analysis for early warning systems.</p>
+            <ul>
+              <li>IOC monitoring</li>
+              <li>Dark web surveillance</li>
+              <li>Threat actor profiling</li>
+              <li>Attack pattern analysis</li>
+            </ul>
+          </div>
+          
+          <div class="advanced-card">
+            <div class="advanced-icon">⚡</div>
+            <h3>Security Orchestration</h3>
+            <p>Automate security operations with SOAR platforms for faster incident response.</p>
+            <ul>
+              <li>Automated playbooks</li>
+              <li>Incident orchestration</li>
+              <li>Response automation</li>
+              <li>Tool integration</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Articles -->
+      {defensePosts.length > 0 && (
+        <section class="related-articles">
+          <h2 class="section-title">📚 Latest Defense Strategy Articles</h2>
+          <div class="articles-grid">
+            {defensePosts.map(post => (
+              <BlogCard {...post} />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .defense-content {
+    padding: 2rem 0;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 3rem 0;
+  }
+
+  .page-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-subtitle {
+    font-size: 1.25rem;
+    color: #94A3B8;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #E2E8F0;
+  }
+
+  .section-intro {
+    text-align: center;
+    color: #94A3B8;
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Quick Defense Checklist */
+  .quick-defense {
+    margin-bottom: 5rem;
+  }
+
+  .checklist-container {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 1rem;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .checklist-intro {
+    text-align: center;
+    color: #CBD5E1;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: 0.5rem;
+    transition: background 0.2s ease;
+  }
+
+  .checklist-item:hover {
+    background: rgba(16, 185, 129, 0.2);
+  }
+
+  .checkbox {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .item-text {
+    color: #E2E8F0;
+    font-size: 0.9rem;
+  }
+
+  /* Certifications */
+  .certifications-section {
+    margin-bottom: 5rem;
+  }
+
+  .certifications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+
+  .cert-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .cert-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .cert-card.beginner {
+    border-color: rgba(34, 197, 94, 0.3);
+  }
+
+  .cert-card.intermediate {
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  .cert-card.advanced {
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .cert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .cert-name {
+    color: #E2E8F0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    flex: 1;
+  }
+
+  .cert-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .level-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .level-badge.beginner {
+    background: #22C55E;
+    color: white;
+  }
+
+  .level-badge.intermediate {
+    background: #F59E0B;
+    color: white;
+  }
+
+  .level-badge.advanced {
+    background: #EF4444;
+    color: white;
+  }
+
+  .provider-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    background: rgba(148, 163, 184, 0.2);
+    color: #94A3B8;
+  }
+
+  .cert-description {
+    color: #CBD5E1;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .cert-details {
+    margin-bottom: 1.5rem;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .detail-label {
+    color: #94A3B8;
+    font-size: 0.875rem;
+  }
+
+  .detail-value {
+    color: #E2E8F0;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .cert-skills h4 {
+    color: #E2E8F0;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-tag {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60A5FA;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  /* Defense Strategies */
+  .strategies-section {
+    margin-bottom: 5rem;
+  }
+
+  .strategy-category {
+    margin-bottom: 4rem;
+  }
+
+  .category-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.5rem;
+    color: #E2E8F0;
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .category-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 10px #10B981);
+  }
+
+  .strategies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .strategy-card {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s ease;
+  }
+
+  .strategy-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .strategy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .strategy-name {
+    color: #E2E8F0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex: 1;
+  }
+
+  .effectiveness-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .effectiveness-badge.very-high {
+    background: #22C55E;
+    color: white;
+  }
+
+  .effectiveness-badge.high {
+    background: #3B82F6;
+    color: white;
+  }
+
+  .effectiveness-badge.medium {
+    background: #F59E0B;
+    color: white;
+  }
+
+  .strategy-description {
+    color: #94A3B8;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    font-size: 0.9rem;
+  }
+
+  .implementation-section h5 {
+    color: #E2E8F0;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .implementation-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .implementation-list li {
+    color: #CBD5E1;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .implementation-list li::before {
+    content: "→";
+    color: #10B981;
+    position: absolute;
+    left: 0;
+  }
+
+  /* Advanced Defense */
+  .advanced-defense {
+    margin-bottom: 5rem;
+  }
+
+  .advanced-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .advanced-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .advanced-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .advanced-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px #10B981);
+  }
+
+  .advanced-card h3 {
+    color: #E2E8F0;
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+  }
+
+  .advanced-card p {
+    color: #94A3B8;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .advanced-card ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+  }
+
+  .advanced-card li {
+    color: #CBD5E1;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .advanced-card li::before {
+    content: "•";
+    color: #10B981;
+    position: absolute;
+    left: 0;
+  }
+
+  /* Related Articles */
+  .related-articles {
+    margin-bottom: 3rem;
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .page-header h1 {
+      font-size: 2rem;
+    }
+
+    .certifications-grid,
+    .strategies-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cert-header,
+    .strategy-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .cert-badges {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .checklist-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .advanced-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .category-title {
+      font-size: 1.25rem;
+    }
+  }
+</style>
