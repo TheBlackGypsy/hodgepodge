@@ -51,7 +51,7 @@
               id="footerEmailInput"
               placeholder="Enter your email" 
               required
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              autocomplete="email"
             >
             <div class="footer-validation" id="footerEmailValidation"></div>
           </div>
@@ -59,6 +59,7 @@
             <span class="btn-text">Subscribe</span>
             <span class="btn-loading hidden">
               <span class="spinner"></span>
+              <span>Subscribing...</span>
             </span>
           </button>
         </form>
@@ -114,10 +115,10 @@
         }
         
         if (validateEmail(email)) {
-          footerEmailValidation.textContent = '✓';
+          footerEmailValidation.textContent = '✓ Valid';
           footerEmailValidation.className = 'footer-validation valid';
         } else {
-          footerEmailValidation.textContent = '✗';
+          footerEmailValidation.textContent = '✗ Invalid email';
           footerEmailValidation.className = 'footer-validation invalid';
         }
       });
@@ -131,7 +132,7 @@
         const email = footerEmailInput.value.trim();
         
         if (!validateEmail(email)) {
-          showFooterError('Invalid email');
+          showFooterError('Please enter a valid email address');
           footerEmailInput.focus();
           return;
         }
@@ -143,12 +144,13 @@
         try {
           // Simulate API call
           await simulateSubscription(email);
-          showFooterSuccess('Subscribed!');
+          showFooterSuccess('Welcome! Check your email for confirmation.');
           footerForm.reset();
           footerEmailValidation.textContent = '';
           footerEmailValidation.className = 'footer-validation';
         } catch (error) {
-          showFooterError('Try again');
+          console.error('Subscription error:', error);
+          showFooterError('Something went wrong. Please try again.');
         } finally {
           setFooterLoadingState(false);
         }
@@ -157,32 +159,38 @@
     
     // Footer helper functions
     function setFooterLoadingState(loading) {
-      if (loading && footerSubscribeBtn) {
+      if (!footerSubscribeBtn) return;
+      
+      if (loading) {
         footerSubscribeBtn.disabled = true;
         footerBtnText?.classList.add('hidden');
         footerBtnLoading?.classList.remove('hidden');
-      } else if (footerSubscribeBtn) {
+        footerSubscribeBtn.style.opacity = '0.8';
+      } else {
         footerSubscribeBtn.disabled = false;
         footerBtnText?.classList.remove('hidden');
         footerBtnLoading?.classList.add('hidden');
+        footerSubscribeBtn.style.opacity = '1';
       }
     }
     
     function showFooterSuccess(message) {
       if (footerSuccessMessage) {
-        footerSuccessMessage.querySelector('.message-text').textContent = message;
+        const messageText = footerSuccessMessage.querySelector('.message-text');
+        if (messageText) messageText.textContent = message;
         footerSuccessMessage.classList.remove('hidden');
         footerErrorMessage?.classList.add('hidden');
-        setTimeout(() => footerSuccessMessage.classList.add('hidden'), 3000);
+        setTimeout(() => footerSuccessMessage.classList.add('hidden'), 5000);
       }
     }
     
     function showFooterError(message) {
       if (footerErrorMessage) {
-        footerErrorMessage.querySelector('.message-text').textContent = message;
+        const messageText = footerErrorMessage.querySelector('.message-text');
+        if (messageText) messageText.textContent = message;
         footerErrorMessage.classList.remove('hidden');
         footerSuccessMessage?.classList.add('hidden');
-        setTimeout(() => footerErrorMessage.classList.add('hidden'), 3000);
+        setTimeout(() => footerErrorMessage.classList.add('hidden'), 5000);
       }
     }
     
@@ -195,12 +203,13 @@
     async function simulateSubscription(email) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          if (Math.random() > 0.1) {
+          // Simulate 95% success rate
+          if (Math.random() > 0.05) {
             resolve({ success: true, email });
           } else {
-            reject(new Error('Subscription failed'));
+            reject(new Error('Network error'));
           }
-        }, 1000);
+        }, 1500);
       });
     }
   });
@@ -309,10 +318,11 @@
     background: rgba(30, 41, 59, 0.8);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 0.5rem;
-    padding: 0.75rem;
+    padding: 0.75rem 3rem 0.75rem 0.75rem;
     color: #E2E8F0;
     outline: none;
     transition: all 0.2s ease;
+    font-size: 0.9rem;
   }
 
   .newsletter-form input:focus {
@@ -329,8 +339,9 @@
     right: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 600;
+    transition: all 0.2s ease;
   }
 
   .footer-validation.valid {
@@ -347,11 +358,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
   }
 
   .footer-subscribe-btn:disabled {
-    opacity: 0.7;
     cursor: not-allowed;
+    transform: none !important;
   }
 
   .btn-loading {
@@ -380,7 +392,7 @@
   }
 
   .footer-message-container {
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
   }
 
   .footer-success-message,
@@ -388,26 +400,28 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
     animation: slideIn 0.3s ease;
   }
 
   .footer-success-message {
     background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
     color: #10B981;
   }
 
   .footer-error-message {
     background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
     color: #EF4444;
   }
 
   @keyframes slideIn {
     from {
       opacity: 0;
-      transform: translateY(-5px);
+      transform: translateY(-10px);
     }
     to {
       opacity: 1;
@@ -440,6 +454,10 @@
     .newsletter-form {
       max-width: 300px;
       margin: 1rem auto 0;
+    }
+
+    .newsletter-form input {
+      font-size: 16px; /* Prevents zoom on iOS */
     }
   }
 </style>
