@@ -1,0 +1,559 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BlogCard from '../components/BlogCard.astro';
+import { blogPosts, getFeaturedPosts } from '../data/blogPosts.ts';
+
+const featuredPosts = getFeaturedPosts();
+const allPosts = blogPosts.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
+
+// Group posts by category
+const postsByCategory = {
+  'Threat Analysis': allPosts.filter(post => post.category === 'Threat Analysis'),
+  'Defense': allPosts.filter(post => post.category === 'Defense'),
+  'Tutorials': allPosts.filter(post => post.category === 'Tutorials'),
+  'Industry News': allPosts.filter(post => post.category === 'Industry News')
+};
+
+// Get unique categories
+const categories = ['All', ...Object.keys(postsByCategory)];
+
+// Blog statistics
+const totalPosts = allPosts.length;
+const totalReadTime = allPosts.reduce((total, post) => {
+  const minutes = parseInt(post.readTime.split(' ')[0]);
+  return total + minutes;
+}, 0);
+const avgReadTime = Math.round(totalReadTime / totalPosts);
+---
+
+<Layout title="Blog - CyberSec Insights" description="Explore our comprehensive collection of cybersecurity articles, tutorials, and industry insights covering threats, defense strategies, and best practices.">
+  <Header />
+  
+  <main class="blog-content">
+    <div class="container">
+      <!-- Blog Header -->
+      <div class="blog-header">
+        <h1>Cybersecurity Blog</h1>
+        <p class="blog-subtitle">
+          Expert insights, practical tutorials, and the latest cybersecurity intelligence
+        </p>
+        
+        <!-- Blog Stats -->
+        <div class="blog-stats">
+          <div class="stat-item">
+            <span class="stat-number">{totalPosts}</span>
+            <span class="stat-label">Articles</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{Math.round(totalReadTime / 60)}h</span>
+            <span class="stat-label">Total Content</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">{avgReadTime}min</span>
+            <span class="stat-label">Avg Read Time</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">4</span>
+            <span class="stat-label">Categories</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Articles -->
+      <section class="featured-section">
+        <h2 class="section-title">🌟 Featured Articles</h2>
+        <div class="featured-grid">
+          {featuredPosts.map(post => (
+            <BlogCard {...post} />
+          ))}
+        </div>
+      </section>
+
+      <!-- Category Filter -->
+      <section class="filter-section">
+        <h2 class="section-title">📚 Browse by Category</h2>
+        <div class="category-filters" id="categoryFilters">
+          {categories.map(category => (
+            <button 
+              class={`filter-btn ${category === 'All' ? 'active' : ''}`}
+              data-category={category}
+            >
+              {category === 'All' ? '📋 All Articles' : 
+               category === 'Threat Analysis' ? '🚨 Threat Analysis' :
+               category === 'Defense' ? '🛡️ Defense Strategies' :
+               category === 'Tutorials' ? '🎓 Tutorials' :
+               '📰 Industry News'}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <!-- All Articles -->
+      <section class="all-articles">
+        <div class="articles-container">
+          <!-- All Posts -->
+          <div class="articles-grid" data-category="All">
+            {allPosts.map(post => (
+              <BlogCard {...post} />
+            ))}
+          </div>
+
+          <!-- Category-specific grids -->
+          {Object.entries(postsByCategory).map(([category, posts]) => (
+            <div class="articles-grid hidden" data-category={category}>
+              {posts.map(post => (
+                <BlogCard {...post} />
+              ))}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Newsletter Signup -->
+      <section class="newsletter-section">
+        <div class="newsletter-card">
+          <div class="newsletter-content">
+            <h3>Stay Updated with Cybersecurity Insights</h3>
+            <p>Get the latest articles, threat intelligence, and security best practices delivered to your inbox.</p>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Enter your email address" required>
+              <button type="submit" class="btn">Subscribe</button>
+            </form>
+            <p class="newsletter-note">Join 50,000+ security professionals. No spam, unsubscribe anytime.</p>
+          </div>
+          <div class="newsletter-icon">📧</div>
+        </div>
+      </section>
+
+      <!-- Archive Section -->
+      <section class="archive-section">
+        <h2 class="section-title">📅 Article Archive</h2>
+        <div class="archive-grid">
+          <div class="archive-card">
+            <h4>Recent Articles</h4>
+            <ul>
+              {allPosts.slice(0, 5).map(post => (
+                <li>
+                  <a href={`/posts/${post.slug}`}>{post.title}</a>
+                  <span class="archive-date">{post.publishDate}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div class="archive-card">
+            <h4>Popular Categories</h4>
+            <div class="category-stats">
+              {Object.entries(postsByCategory).map(([category, posts]) => (
+                <div class="category-stat">
+                  <span class="category-name">{category}</span>
+                  <span class="category-count">{posts.length} articles</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div class="archive-card">
+            <h4>Quick Links</h4>
+            <ul class="quick-links">
+              <li><a href="/threats">Current Threats</a></li>
+              <li><a href="/defense">Defense Strategies</a></li>
+              <li><a href="/tutorials">Security Tutorials</a></li>
+              <li><a href="/about">About the Author</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  // Category filtering functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const articleGrids = document.querySelectorAll('.articles-grid');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const category = this.getAttribute('data-category');
+        
+        // Update active button
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Show/hide article grids
+        articleGrids.forEach(grid => {
+          const gridCategory = grid.getAttribute('data-category');
+          if (gridCategory === category) {
+            grid.classList.remove('hidden');
+          } else {
+            grid.classList.add('hidden');
+          }
+        });
+      });
+    });
+    
+    // Newsletter form handling
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = this.querySelector('input[type="email"]').value;
+        alert(`Thank you for subscribing with ${email}! We'll keep you updated with the latest cybersecurity insights.`);
+        this.reset();
+      });
+    }
+  });
+</script>
+
+<style>
+  .blog-content {
+    padding: 2rem 0;
+  }
+
+  .blog-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 3rem 0;
+  }
+
+  .blog-header h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .blog-subtitle {
+    font-size: 1.25rem;
+    color: #94A3B8;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+
+  .blog-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #10B981;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #E2E8F0;
+  }
+
+  /* Featured Section */
+  .featured-section {
+    margin-bottom: 5rem;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+  }
+
+  /* Filter Section */
+  .filter-section {
+    margin-bottom: 3rem;
+  }
+
+  .category-filters {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    color: #CBD5E1;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+
+  .filter-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #60A5FA;
+  }
+
+  .filter-btn.active {
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    border-color: #3B82F6;
+    color: white;
+  }
+
+  /* Articles Section */
+  .all-articles {
+    margin-bottom: 5rem;
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .articles-grid.hidden {
+    display: none;
+  }
+
+  /* Newsletter Section */
+  .newsletter-section {
+    margin-bottom: 5rem;
+  }
+
+  .newsletter-card {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 1rem;
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .newsletter-content {
+    flex: 1;
+  }
+
+  .newsletter-content h3 {
+    color: #E2E8F0;
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .newsletter-content p {
+    color: #94A3B8;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .newsletter-form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .newsletter-form input {
+    flex: 1;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: #E2E8F0;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .newsletter-form input:focus {
+    border-color: #10B981;
+  }
+
+  .newsletter-form input::placeholder {
+    color: #64748B;
+  }
+
+  .newsletter-note {
+    color: #64748B;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  .newsletter-icon {
+    font-size: 4rem;
+    filter: drop-shadow(0 0 20px #10B981);
+  }
+
+  /* Archive Section */
+  .archive-section {
+    margin-bottom: 3rem;
+  }
+
+  .archive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .archive-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .archive-card h4 {
+    color: #E2E8F0;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .archive-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .archive-card li {
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .archive-card a {
+    color: #CBD5E1;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    flex: 1;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .archive-card a:hover {
+    color: #10B981;
+  }
+
+  .archive-date {
+    color: #64748B;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .category-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .category-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .category-name {
+    color: #CBD5E1;
+    font-size: 0.9rem;
+  }
+
+  .category-count {
+    color: #10B981;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .quick-links {
+    list-style: none;
+    padding: 0;
+  }
+
+  .quick-links li {
+    margin-bottom: 0.5rem;
+  }
+
+  .quick-links a {
+    color: #CBD5E1;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .quick-links a:hover {
+    color: #10B981;
+    transform: translateX(4px);
+  }
+
+  .quick-links a::before {
+    content: "→";
+    margin-right: 0.5rem;
+    color: #10B981;
+  }
+
+  @media (max-width: 768px) {
+    .blog-header h1 {
+      font-size: 2.5rem;
+    }
+
+    .blog-stats {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .featured-grid,
+    .articles-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .category-filters {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .filter-btn {
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .newsletter-card {
+      flex-direction: column;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .newsletter-form {
+      flex-direction: column;
+    }
+
+    .archive-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .archive-card li {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+  }
+</style>

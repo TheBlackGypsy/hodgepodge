@@ -13,6 +13,7 @@ const currentPath = Astro.url.pathname;
     
     <ul class="nav-menu">
       <li><a href="/" class={currentPath === '/' ? 'active' : ''}>Home</a></li>
+      <li><a href="/blog" class={currentPath === '/blog' ? 'active' : ''}>Blog</a></li>
       <li><a href="/threats" class={currentPath === '/threats' ? 'active' : ''}>Threats</a></li>
       <li><a href="/defense" class={currentPath === '/defense' ? 'active' : ''}>Defense</a></li>
       <li><a href="/tutorials" class={currentPath === '/tutorials' ? 'active' : ''}>Tutorials</a></li>
