@@ -6,17 +6,18 @@ import BlogCard from '../components/BlogCard.astro';
 import { blogPosts, getFeaturedPosts } from '../data/blogPosts.ts';
 
 const featuredPosts = getFeaturedPosts();
-const allPosts = blogPosts.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
 
 // Handle search query
 const searchQuery = Astro.url.searchParams.get('search') || '';
 const filteredPosts = searchQuery 
-  ? allPosts.filter(post => 
+  ? blogPosts.filter(post => 
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     )
-  : allPosts;
+  : blogPosts;
+
+const allPosts = filteredPosts.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
 
 // Group posts by category
 const postsByCategory = {
@@ -83,7 +84,7 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
       <!-- Featured Articles (only show if no search) -->
       {!searchQuery && (
         <section class="featured-section">
-          <h2 class="section-title">🌟 Featured Articles</h2>
+          <h2 class="section-title">Featured Articles</h2>
           <div class="featured-grid">
             {featuredPosts.map(post => (
               <BlogCard {...post} />
@@ -94,7 +95,7 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
 
       <!-- Category Filter -->
       <section class="filter-section">
-        <h2 class="section-title">📚 Browse by Category</h2>
+        <h2 class="section-title">Browse by Category</h2>
         <div class="category-filters" id="categoryFilters">
           {categories.map(category => (
             <button 
@@ -116,7 +117,7 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         <div class="articles-container">
           <!-- All Posts -->
           <div class="articles-grid" data-category="All">
-            {filteredPosts.map(post => (
+            {allPosts.map(post => (
               <BlogCard {...post} />
             ))}
           </div>
@@ -177,7 +178,7 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
 
       <!-- Archive Section -->
       <section class="archive-section">
-        <h2 class="section-title">📅 Article Archive</h2>
+        <h2 class="section-title">Article Archive</h2>
         <div class="archive-grid">
           <div class="archive-card">
             <h4>Recent Articles</h4>
@@ -420,7 +421,7 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
   }
 
   .search-results {
-    background: rgba(59, 130, 246, 0.1);
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
     border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 0.75rem;
     padding: 1rem;
@@ -430,26 +431,29 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
   }
 
   .search-results p {
-    color: #E2E8F0;
+    color: white;
     margin: 0;
+    font-weight: 500;
   }
 
   .clear-search-btn {
-    background: rgba(59, 130, 246, 0.2);
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    color: #60A5FA;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.875rem;
+    font-weight: 500;
   }
 
   .clear-search-btn:hover {
-    background: rgba(59, 130, 246, 0.3);
+    background: rgba(255, 255, 255, 0.3);
     transform: translateY(-1px);
   }
 
@@ -462,13 +466,25 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
 
   .stat-item {
     text-align: center;
+    background: rgba(30, 41, 59, 0.6);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    transition: transform 0.2s ease;
+  }
+
+  .stat-item:hover {
+    transform: translateY(-2px);
   }
 
   .stat-number {
     display: block;
     font-size: 2rem;
     font-weight: 700;
-    color: #10B981;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 0.25rem;
   }
 
@@ -484,7 +500,10 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     font-weight: 700;
     text-align: center;
     margin-bottom: 3rem;
-    color: #E2E8F0;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   /* Featured Section */
@@ -522,10 +541,11 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
   }
 
   .filter-btn:hover {
-    background: rgba(59, 130, 246, 0.2);
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
     border-color: rgba(59, 130, 246, 0.3);
-    color: #60A5FA;
+    color: white;
     transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
   }
 
   .filter-btn.active {
@@ -533,7 +553,7 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     border-color: #3B82F6;
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
   }
 
   /* Articles Section */
@@ -573,7 +593,10 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
   }
 
   .newsletter-content h3 {
-    color: #E2E8F0;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: 1.5rem;
     margin-bottom: 0.75rem;
   }
@@ -642,11 +665,13 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     position: relative;
     min-width: 140px;
     transition: all 0.2s ease;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
   }
 
   .subscribe-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
   }
 
   .subscribe-btn:disabled {
@@ -748,7 +773,10 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
   }
 
   .archive-card h4 {
-    color: #E2E8F0;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 1rem;
     font-size: 1.1rem;
   }
@@ -783,6 +811,9 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     color: #64748B;
     font-size: 0.75rem;
     white-space: nowrap;
+    background: rgba(100, 116, 139, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
   }
 
   .category-stats {
@@ -795,6 +826,9 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0.5rem;
+    background: rgba(148, 163, 184, 0.05);
+    border-radius: 0.25rem;
   }
 
   .category-name {
@@ -803,7 +837,10 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
   }
 
   .category-count {
-    color: #10B981;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: 0.875rem;
     font-weight: 500;
   }
@@ -824,11 +861,14 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     font-size: 0.9rem;
     display: inline-flex;
     align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
   }
 
   .quick-links a:hover {
     color: #10B981;
     transform: translateX(4px);
+    background: rgba(16, 185, 129, 0.1);
   }
 
   .quick-links a::before {

@@ -30,7 +30,7 @@ const tutorialsByDifficulty = {
 
       <!-- Featured Tutorials -->
       <section class="featured-tutorials">
-        <h2 class="section-title">🌟 Featured Tutorials</h2>
+        <h2 class="section-title">Featured Tutorials</h2>
         <div class="featured-grid">
           {featuredTutorials.map(tutorial => (
             <div class="tutorial-card featured">
@@ -75,7 +75,7 @@ const tutorialsByDifficulty = {
               <div class="tutorial-footer">
                 <div class="tutorial-tags">
                   {tutorial.tags.slice(0, 3).map(tag => (
-                    <span class="tag">#{tag}</span>
+                    <span class="tag">{tag}</span>
                   ))}
                 </div>
                 <a href={`/tutorials/${tutorial.slug}`} class="tutorial-link">
@@ -89,7 +89,7 @@ const tutorialsByDifficulty = {
 
       <!-- All Tutorials by Difficulty -->
       <section class="all-tutorials">
-        <h2 class="section-title">📚 All Tutorials</h2>
+        <h2 class="section-title">All Tutorials</h2>
         
         {Object.entries(tutorialsByDifficulty).map(([difficulty, tutorials]) => (
           tutorials.length > 0 && (
@@ -137,7 +137,7 @@ const tutorialsByDifficulty = {
                     <div class="tutorial-footer">
                       <div class="tutorial-tags">
                         {tutorial.tags.slice(0, 2).map(tag => (
-                          <span class="tag">#{tag}</span>
+                          <span class="tag">{tag}</span>
                         ))}
                       </div>
                       <a href={`/tutorials/${tutorial.slug}`} class="tutorial-link">
@@ -154,7 +154,7 @@ const tutorialsByDifficulty = {
 
       <!-- Tutorial Categories -->
       <section class="tutorial-categories">
-        <h2 class="section-title">🎯 Tutorial Categories</h2>
+        <h2 class="section-title">Tutorial Categories</h2>
         <div class="categories-grid">
           <div class="category-card">
             <div class="category-icon">🏗️</div>
@@ -204,7 +204,7 @@ const tutorialsByDifficulty = {
 
       <!-- Getting Started Guide -->
       <section class="getting-started">
-        <h2 class="section-title">🚀 Getting Started</h2>
+        <h2 class="section-title">Getting Started</h2>
         <div class="getting-started-content">
           <div class="start-path">
             <h3>New to Cybersecurity?</h3>
@@ -270,7 +270,10 @@ const tutorialsByDifficulty = {
     font-weight: 700;
     text-align: center;
     margin-bottom: 3rem;
-    color: #E2E8F0;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   /* Featured Tutorials */
@@ -291,6 +294,23 @@ const tutorialsByDifficulty = {
     padding: 2rem;
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tutorial-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .tutorial-card:hover::before {
+    left: 100%;
   }
 
   .tutorial-card:hover {
@@ -322,20 +342,21 @@ const tutorialsByDifficulty = {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   .difficulty-badge.beginner {
-    background: #22C55E;
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
     color: white;
   }
 
   .difficulty-badge.intermediate {
-    background: #F59E0B;
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
     color: white;
   }
 
   .difficulty-badge.advanced {
-    background: #EF4444;
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
     color: white;
   }
 
@@ -345,11 +366,15 @@ const tutorialsByDifficulty = {
     font-size: 0.75rem;
     background: rgba(148, 163, 184, 0.2);
     color: #94A3B8;
+    border: 1px solid rgba(148, 163, 184, 0.3);
   }
 
   .read-time {
     color: #64748B;
     font-size: 0.875rem;
+    background: rgba(100, 116, 139, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
   }
 
   .tutorial-title {
@@ -361,11 +386,18 @@ const tutorialsByDifficulty = {
   .tutorial-title a {
     color: #E2E8F0;
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+    background: linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .tutorial-title a:hover {
-    color: #3B82F6;
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .tutorial-excerpt {
@@ -385,7 +417,10 @@ const tutorialsByDifficulty = {
 
   .prerequisites h4,
   .tools-required h4 {
-    color: #E2E8F0;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
   }
@@ -417,11 +452,12 @@ const tutorialsByDifficulty = {
   }
 
   .tool-tag {
-    background: rgba(59, 130, 246, 0.2);
-    color: #60A5FA;
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
   }
 
   .tutorial-footer {
@@ -439,22 +475,27 @@ const tutorialsByDifficulty = {
   }
 
   .tag {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10B981;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
   }
 
   .tutorial-link {
     color: #3B82F6;
     font-weight: 500;
     transition: all 0.2s ease;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    background: rgba(59, 130, 246, 0.1);
   }
 
   .tutorial-link:hover {
     color: #60A5FA;
     transform: translateX(4px);
+    background: rgba(59, 130, 246, 0.2);
   }
 
   /* All Tutorials Section */
@@ -471,7 +512,10 @@ const tutorialsByDifficulty = {
     align-items: center;
     gap: 1rem;
     font-size: 1.5rem;
-    color: #E2E8F0;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 2rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid rgba(148, 163, 184, 0.1);
@@ -521,11 +565,12 @@ const tutorialsByDifficulty = {
     padding: 2rem;
     text-align: center;
     backdrop-filter: blur(10px);
-    transition: transform 0.2s ease;
+    transition: all 0.3s ease;
   }
 
   .category-card:hover {
     transform: translateY(-4px);
+    border-color: rgba(59, 130, 246, 0.3);
   }
 
   .category-icon {
@@ -535,7 +580,10 @@ const tutorialsByDifficulty = {
   }
 
   .category-card h3 {
-    color: #E2E8F0;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 0.75rem;
     font-size: 1.25rem;
   }
@@ -589,7 +637,10 @@ const tutorialsByDifficulty = {
 
   .start-path h3,
   .advanced-path h3 {
-    color: #E2E8F0;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 1rem;
     font-size: 1.25rem;
   }
@@ -611,6 +662,11 @@ const tutorialsByDifficulty = {
   .start-path li,
   .advanced-path li {
     margin-bottom: 0.5rem;
+  }
+
+  .start-path strong,
+  .advanced-path strong {
+    color: #10B981;
   }
 
   @media (max-width: 768px) {

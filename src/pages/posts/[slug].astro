@@ -38,7 +38,7 @@ if (!post) {
             </div>
             <div class="post-tags">
               {post.tags.map(tag => (
-                <span class="tag">#{tag}</span>
+                <span class="tag">{tag}</span>
               ))}
             </div>
           </div>
@@ -111,12 +111,15 @@ if (!post) {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
   }
 
   .read-time {
-    color: #64748B;
+    color: #94A3B8;
     font-size: 0.875rem;
     padding: 0.25rem 0.75rem;
+    background: rgba(148, 163, 184, 0.1);
+    border-radius: 0.5rem;
   }
 
   .post-title {
@@ -147,11 +150,17 @@ if (!post) {
   .author {
     color: #E2E8F0;
     font-weight: 500;
+    background: rgba(226, 232, 240, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
   }
 
   .publish-date {
     color: #64748B;
     font-size: 0.875rem;
+    background: rgba(100, 116, 139, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
   }
 
   .post-tags {
@@ -161,11 +170,12 @@ if (!post) {
   }
 
   .tag {
-    background: rgba(59, 130, 246, 0.2);
-    color: #60A5FA;
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.875rem;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
   }
 
   .post-body {
@@ -181,7 +191,10 @@ if (!post) {
   .post-body :global(h4),
   .post-body :global(h5),
   .post-body :global(h6) {
-    color: #E2E8F0;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-top: 2rem;
     margin-bottom: 1rem;
   }
@@ -194,19 +207,21 @@ if (!post) {
 
   .post-body :global(li) {
     margin-bottom: 0.5rem;
+    color: #CBD5E1;
   }
 
   .post-body :global(strong) {
-    color: #E2E8F0;
+    color: #10B981;
     font-weight: 600;
   }
 
   .post-body :global(code) {
-    background: rgba(59, 130, 246, 0.2);
-    color: #60A5FA;
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-family: 'Fira Code', monospace;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
   }
 
   .post-footer {
@@ -221,6 +236,10 @@ if (!post) {
   .share-section h4 {
     color: #E2E8F0;
     margin-bottom: 1rem;
+    background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .share-buttons {
@@ -233,17 +252,34 @@ if (!post) {
     display: inline-flex;
     align-items: center;
     padding: 0.5rem 1rem;
-    background: rgba(59, 130, 246, 0.2);
-    color: #60A5FA;
     border-radius: 0.5rem;
     text-decoration: none;
     font-size: 0.875rem;
     transition: all 0.2s ease;
+    font-weight: 500;
+  }
+
+  .share-btn.twitter {
+    background: linear-gradient(135deg, #1DA1F2 0%, #0d8bd9 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(29, 161, 242, 0.3);
+  }
+
+  .share-btn.linkedin {
+    background: linear-gradient(135deg, #0077B5 0%, #005885 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 119, 181, 0.3);
+  }
+
+  .share-btn.email {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
   }
 
   .share-btn:hover {
-    background: rgba(59, 130, 246, 0.3);
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
   }
 
   .back-to-blog {
