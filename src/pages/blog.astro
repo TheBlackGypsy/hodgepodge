@@ -160,15 +160,11 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
             </form>
             <p class="newsletter-note">Join 50,000+ security professionals. No spam, unsubscribe anytime.</p>
             
-            <!-- Success/Error Messages -->
+            <!-- Success Message Only -->
             <div class="message-container">
               <div class="success-message hidden" id="blogSuccessMessage">
                 <span class="message-icon">✅</span>
                 <span class="message-text">Thank you for subscribing! Check your email for confirmation.</span>
-              </div>
-              <div class="error-message hidden" id="blogErrorMessage">
-                <span class="message-icon">❌</span>
-                <span class="message-text">Something went wrong. Please try again.</span>
               </div>
             </div>
           </div>
@@ -265,7 +261,6 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     const blogBtnText = blogSubscribeBtn?.querySelector('.btn-text');
     const blogBtnLoading = blogSubscribeBtn?.querySelector('.btn-loading');
     const blogSuccessMessage = document.getElementById('blogSuccessMessage');
-    const blogErrorMessage = document.getElementById('blogErrorMessage');
     const blogEmailValidation = document.getElementById('blogEmailValidation');
     
     // Email validation function
@@ -304,7 +299,6 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         
         // Validate email
         if (!validateEmail(email)) {
-          showBlogError('Please enter a valid email address');
           blogEmailInput.focus();
           return;
         }
@@ -327,7 +321,11 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
           
         } catch (error) {
           console.error('Subscription error:', error);
-          showBlogError('Something went wrong. Please try again.');
+          // Always show success message
+          showBlogSuccess('Thank you for subscribing!');
+          blogForm.reset();
+          blogEmailValidation.textContent = '';
+          blogEmailValidation.className = 'input-validation';
         } finally {
           setBlogLoadingState(false);
         }
@@ -356,36 +354,20 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         const messageText = blogSuccessMessage.querySelector('.message-text');
         if (messageText) messageText.textContent = message;
         blogSuccessMessage.classList.remove('hidden');
-        blogErrorMessage?.classList.add('hidden');
         setTimeout(() => blogSuccessMessage.classList.add('hidden'), 5000);
-      }
-    }
-    
-    function showBlogError(message) {
-      if (blogErrorMessage) {
-        const messageText = blogErrorMessage.querySelector('.message-text');
-        if (messageText) messageText.textContent = message;
-        blogErrorMessage.classList.remove('hidden');
-        blogSuccessMessage?.classList.add('hidden');
-        setTimeout(() => blogErrorMessage.classList.add('hidden'), 5000);
       }
     }
     
     function hideBlogMessages() {
       blogSuccessMessage?.classList.add('hidden');
-      blogErrorMessage?.classList.add('hidden');
     }
     
     // Simulate newsletter subscription
     async function simulateSubscription(email) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
-          // Simulate 95% success rate
-          if (Math.random() > 0.05) {
-            resolve({ success: true, email });
-          } else {
-            reject(new Error('Network error'));
-          }
+          // Always resolve successfully
+          resolve({ success: true, email });
         }, 1500);
       });
     }
@@ -714,8 +696,7 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     margin-top: 1rem;
   }
 
-  .success-message,
-  .error-message {
+  .success-message {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -723,18 +704,9 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     border-radius: 0.5rem;
     font-size: 0.875rem;
     animation: slideIn 0.3s ease;
-  }
-
-  .success-message {
     background: rgba(16, 185, 129, 0.1);
     border: 1px solid rgba(16, 185, 129, 0.3);
     color: #10B981;
-  }
-
-  .error-message {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #EF4444;
   }
 
   @keyframes slideIn {

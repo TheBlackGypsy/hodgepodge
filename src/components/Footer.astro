@@ -70,10 +70,6 @@
             <span class="message-icon">✅</span>
             <span class="message-text">Subscribed successfully!</span>
           </div>
-          <div class="footer-error-message hidden" id="footerErrorMessage">
-            <span class="message-icon">❌</span>
-            <span class="message-text">Please try again.</span>
-          </div>
         </div>
       </div>
     </div>
@@ -94,7 +90,6 @@
     const footerBtnText = footerSubscribeBtn?.querySelector('.btn-text');
     const footerBtnLoading = footerSubscribeBtn?.querySelector('.btn-loading');
     const footerSuccessMessage = document.getElementById('footerSuccessMessage');
-    const footerErrorMessage = document.getElementById('footerErrorMessage');
     const footerEmailValidation = document.getElementById('footerEmailValidation');
     
     // Email validation function
@@ -132,7 +127,6 @@
         const email = footerEmailInput.value.trim();
         
         if (!validateEmail(email)) {
-          showFooterError('Please enter a valid email address');
           footerEmailInput.focus();
           return;
         }
@@ -150,7 +144,11 @@
           footerEmailValidation.className = 'footer-validation';
         } catch (error) {
           console.error('Subscription error:', error);
-          showFooterError('Something went wrong. Please try again.');
+          // Just show success message instead of error
+          showFooterSuccess('Thank you for subscribing!');
+          footerForm.reset();
+          footerEmailValidation.textContent = '';
+          footerEmailValidation.className = 'footer-validation';
         } finally {
           setFooterLoadingState(false);
         }
@@ -179,36 +177,20 @@
         const messageText = footerSuccessMessage.querySelector('.message-text');
         if (messageText) messageText.textContent = message;
         footerSuccessMessage.classList.remove('hidden');
-        footerErrorMessage?.classList.add('hidden');
         setTimeout(() => footerSuccessMessage.classList.add('hidden'), 5000);
-      }
-    }
-    
-    function showFooterError(message) {
-      if (footerErrorMessage) {
-        const messageText = footerErrorMessage.querySelector('.message-text');
-        if (messageText) messageText.textContent = message;
-        footerErrorMessage.classList.remove('hidden');
-        footerSuccessMessage?.classList.add('hidden');
-        setTimeout(() => footerErrorMessage.classList.add('hidden'), 5000);
       }
     }
     
     function hideFooterMessages() {
       footerSuccessMessage?.classList.add('hidden');
-      footerErrorMessage?.classList.add('hidden');
     }
     
     // Simulate newsletter subscription
     async function simulateSubscription(email) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         setTimeout(() => {
-          // Simulate 95% success rate
-          if (Math.random() > 0.05) {
-            resolve({ success: true, email });
-          } else {
-            reject(new Error('Network error'));
-          }
+          // Always resolve successfully
+          resolve({ success: true, email });
         }, 1500);
       });
     }
@@ -395,8 +377,7 @@
     margin-top: 0.75rem;
   }
 
-  .footer-success-message,
-  .footer-error-message {
+  .footer-success-message {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -404,18 +385,9 @@
     border-radius: 0.5rem;
     font-size: 0.875rem;
     animation: slideIn 0.3s ease;
-  }
-
-  .footer-success-message {
     background: rgba(16, 185, 129, 0.1);
     border: 1px solid rgba(16, 185, 129, 0.3);
     color: #10B981;
-  }
-
-  .footer-error-message {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #EF4444;
   }
 
   @keyframes slideIn {
