@@ -88,38 +88,36 @@ Before starting, ensure you have:
    - Install VMware Tools for better performance
 
 3. **Initial Server Configuration**
-   ``\`powershell
+   \`\`\`powershell
    # Set static IP address
    New-NetIPAddress -InterfaceAlias "Ethernet0" -IPAddress 192.168.10.10 -PrefixLength 24 -DefaultGateway 192.168.10.1
    Set-DnsClientServerAddress -InterfaceAlias "Ethernet0" -ServerAddresses 192.168.10.10
    
    # Rename computer
    Rename-Computer -NewName "DC01" -Restart
-   ```
+   \`\`\`
 
 ### Install Active Directory Domain Services
 
 1. **Add ADDS Role**
-   ``\`powershell
+   \`\`\`powershell
    # Install AD DS role
    Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
    
    # Import AD DS module
    Import-Module ADDSDeployment
-   ```
+   \`\`\`
 
 2. **Promote to Domain Controller**
-   ``\`powershell
+   \`\`\`powershell
    # Create new forest and domain
-   Install-ADDSForest `
-     -DomainName "lab.local" `
-     -DomainNetbiosName "LAB" `
-     -InstallDns `
-     -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd123!" -AsPlainText -Force) `
+   Install-ADDSForest \`
+     -DomainName "lab.local" \`
+     -DomainNetbiosName "LAB" \`
+     -InstallDns \`
+     -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd123!" -AsPlainText -Force) \`
      -Force
-   ```
-  }
-]
+   \`\`\`
 
 3. **Post-Installation Configuration**
    - Server will restart automatically
@@ -130,39 +128,39 @@ Before starting, ensure you have:
 
 ### Configure DNS
 1. **DNS Zones Setup**
-   ```powershell
+   \`\`\`powershell
    # Create reverse lookup zone
    Add-DnsServerPrimaryZone -NetworkID "192.168.10.0/24" -ZoneFile "10.168.192.in-addr.arpa.dns"
    
    # Add DNS records
    Add-DnsServerResourceRecordA -ZoneName "lab.local" -Name "dc01" -IPv4Address "192.168.10.10"
    Add-DnsServerResourceRecordA -ZoneName "lab.local" -Name "client01" -IPv4Address "192.168.10.20"
-   ```
+   \`\`\`
 
 ### Install and Configure DHCP
 1. **Install DHCP Role**
-   ```powershell
+   \`\`\`powershell
    # Install DHCP Server role
    Install-WindowsFeature -Name DHCP -IncludeManagementTools
    
    # Authorize DHCP server
    Add-DhcpServerInDC -DnsName "dc01.lab.local" -IPAddress 192.168.10.10
-   ```
+   \`\`\`
 
 2. **Configure DHCP Scope**
-   ```powershell
+   \`\`\`powershell
    # Create DHCP scope
    Add-DhcpServerv4Scope -Name "Lab Network" -StartRange 192.168.10.100 -EndRange 192.168.10.200 -SubnetMask 255.255.255.0
    
    # Set scope options
    Set-DhcpServerv4OptionValue -ScopeId 192.168.10.0 -OptionId 3 -Value 192.168.10.1  # Default Gateway
    Set-DhcpServerv4OptionValue -ScopeId 192.168.10.0 -OptionId 6 -Value 192.168.10.10  # DNS Server
-   ```
+   \`\`\`
 
 ## Step 4: Create Organizational Structure
 
 ### Design OU Structure
-```powershell
+\`\`\`powershell
 # Create Organizational Units
 New-ADOrganizationalUnit -Name "Lab Users" -Path "DC=lab,DC=local"
 New-ADOrganizationalUnit -Name "Lab Computers" -Path "DC=lab,DC=local"
@@ -173,10 +171,10 @@ New-ADOrganizationalUnit -Name "Service Accounts" -Path "DC=lab,DC=local"
 New-ADOrganizationalUnit -Name "IT Department" -Path "OU=Lab Users,DC=lab,DC=local"
 New-ADOrganizationalUnit -Name "HR Department" -Path "OU=Lab Users,DC=lab,DC=local"
 New-ADOrganizationalUnit -Name "Finance Department" -Path "OU=Lab Users,DC=lab,DC=local"
-```
+\`\`\`
 
 ### Create User Accounts
-```powershell
+\`\`\`powershell
 # Create test users
 $users = @(
     @{Name="John Smith"; Username="jsmith"; Department="IT"; Title="IT Administrator"},
@@ -189,10 +187,10 @@ foreach ($user in $users) {
     $securePassword = ConvertTo-SecureString "Password123!" -AsPlainText -Force
     New-ADUser -Name $user.Name -SamAccountName $user.Username -UserPrincipalName "$($user.Username)@lab.local" -Path "OU=$($user.Department) Department,OU=Lab Users,DC=lab,DC=local" -AccountPassword $securePassword -Enabled $true -Department $user.Department -Title $user.Title
 }
-```
+\`\`\`
 
 ### Create Security Groups
-```powershell
+\`\`\`powershell
 # Create security groups
 New-ADGroup -Name "IT Admins" -GroupScope Global -GroupCategory Security -Path "OU=IT Department,OU=Lab Users,DC=lab,DC=local"
 New-ADGroup -Name "HR Staff" -GroupScope Global -GroupCategory Security -Path "OU=HR Department,OU=Lab Users,DC=lab,DC=local"
@@ -202,7 +200,7 @@ New-ADGroup -Name "Finance Team" -GroupScope Global -GroupCategory Security -Pat
 Add-ADGroupMember -Identity "IT Admins" -Members "jsmith", "awilson"
 Add-ADGroupMember -Identity "HR Staff" -Members "jdoe"
 Add-ADGroupMember -Identity "Finance Team" -Members "bjohnson"
-```
+\`\`\`
 
 ## Step 5: Windows Client Setup
 
@@ -221,27 +219,27 @@ Add-ADGroupMember -Identity "Finance Team" -Members "bjohnson"
 
 ### Join Domain
 1. **Network Configuration**
-   ```cmd
+   \`\`\`cmd
    # Set static IP and DNS
    netsh interface ip set address "Ethernet" static 192.168.10.20 255.255.255.0 192.168.10.1
    netsh interface ip set dns "Ethernet" static 192.168.10.10
-   ```
+   \`\`\`
 
 2. **Domain Join Process**
    - Open System Properties
-   - Click "Change\" next to computer name
-   - Select "Domain\" and enter "lab.local"
+   - Click "Change" next to computer name
+   - Select "Domain" and enter "lab.local"
    - Use domain administrator credentials
    - Restart when prompted
 
 3. **Verify Domain Join**
-   ```powershell
+   \`\`\`powershell
    # Check domain membership
    Get-ComputerInfo | Select-Object CsDomain, CsDomainRole
    
    # Test domain connectivity
    Test-ComputerSecureChannel -Verbose
-   ```
+   \`\`\`
 
 ## Step 6: Kali Linux Setup
 
@@ -256,10 +254,10 @@ Add-ADGroupMember -Identity "Finance Team" -Members "bjohnson"
    - Download Kali Linux ISO
    - Install with default settings
    - Create user account
-   - Update system: `sudo apt update && sudo apt upgrade -y`
+   - Update system: \`sudo apt update && sudo apt upgrade -y\`
 
 3. **Network Configuration**
-   ```bash
+   \`\`\`bash
    # Configure static IP for internal network
    sudo nano /etc/network/interfaces
    
@@ -270,10 +268,10 @@ Add-ADGroupMember -Identity "Finance Team" -Members "bjohnson"
    netmask 255.255.255.0
    gateway 192.168.10.1
    dns-nameservers 192.168.10.10
-   ```
+   \`\`\`
 
 ### Install Additional Tools
-```bash
+\`\`\`bash
 # Update and install additional tools
 sudo apt update
 sudo apt install -y bloodhound neo4j crackmapexec impacket-scripts responder
@@ -286,32 +284,32 @@ sudo apt install -y powershell
 
 # Install PowerView and other PowerShell modules
 pwsh -Command "Install-Module -Name PowerSploit -Force"
-```
+\`\`\`
 
 ## Step 7: Network Security Configuration
 
 ### Configure Windows Firewall
-```powershell
+\`\`\`powershell
 # On Domain Controller - Allow necessary services
 New-NetFirewallRule -DisplayName "Allow DNS" -Direction Inbound -Protocol TCP -LocalPort 53
 New-NetFirewallRule -DisplayName "Allow DNS UDP" -Direction Inbound -Protocol UDP -LocalPort 53
 New-NetFirewallRule -DisplayName "Allow LDAP" -Direction Inbound -Protocol TCP -LocalPort 389
 New-NetFirewallRule -DisplayName "Allow LDAPS" -Direction Inbound -Protocol TCP -LocalPort 636
 New-NetFirewallRule -DisplayName "Allow Kerberos" -Direction Inbound -Protocol TCP -LocalPort 88
-```
+\`\`\`
 
 ### Implement Group Policy
 1. **Create Security Policies**
-   ```powershell
+   \`\`\`powershell
    # Create and link GPOs
    New-GPO -Name "Password Policy" | New-GPLink -Target "DC=lab,DC=local"
    New-GPO -Name "Audit Policy" | New-GPLink -Target "DC=lab,DC=local"
    New-GPO -Name "Software Restriction" | New-GPLink -Target "OU=Lab Computers,DC=lab,DC=local"
-   ```
+   \`\`\`
 
 2. **Configure Password Policy**
    - Open Group Policy Management
-   - Edit "Password Policy\" GPO
+   - Edit "Password Policy" GPO
    - Navigate to Computer Configuration > Policies > Windows Settings > Security Settings > Account Policies
    - Set minimum password length: 12 characters
    - Set password complexity: Enabled
@@ -320,25 +318,25 @@ New-NetFirewallRule -DisplayName "Allow Kerberos" -Direction Inbound -Protocol T
 ## Step 8: Monitoring and Logging
 
 ### Enable Advanced Auditing
-```powershell
+\`\`\`powershell
 # Enable advanced audit policies
 auditpol /set /subcategory:"Logon" /success:enable /failure:enable
 auditpol /set /subcategory:"Account Logon" /success:enable /failure:enable
 auditpol /set /subcategory:"Object Access" /success:enable /failure:enable
 auditpol /set /subcategory:"Privilege Use" /success:enable /failure:enable
 auditpol /set /subcategory:"Process Tracking" /success:enable /failure:enable
-```
+\`\`\`
 
 ### Configure Sysmon
 1. **Install Sysmon**
-   ```powershell
+   \`\`\`powershell
    # Download and install Sysmon
    Invoke-WebRequest -Uri "https://download.sysinternals.com/files/Sysmon.zip" -OutFile "Sysmon.zip"
-   Expand-Archive -Path "Sysmon.zip" -DestinationPath "C:\Tools\Sysmon"
+   Expand-Archive -Path "Sysmon.zip" -DestinationPath "C:\\Tools\\Sysmon"
    
    # Install with configuration
-   C:\Tools\Sysmon\sysmon64.exe -accepteula -i sysmonconfig.xml
-   ```
+   C:\\Tools\\Sysmon\\sysmon64.exe -accepteula -i sysmonconfig.xml
+   \`\`\`
 
 2. **Sysmon Configuration**
    - Download SwiftOnSecurity's sysmon config
@@ -348,7 +346,7 @@ auditpol /set /subcategory:"Process Tracking" /success:enable /failure:enable
 ## Step 9: Vulnerability Introduction
 
 ### Create Intentional Vulnerabilities
-```powershell
+\`\`\`powershell
 # Create vulnerable service account
 New-ADUser -Name "SQL Service" -SamAccountName "sqlsvc" -UserPrincipalName "sqlsvc@lab.local" -Path "OU=Service Accounts,DC=lab,DC=local" -AccountPassword (ConvertTo-SecureString "SQLService123!" -AsPlainText -Force) -Enabled $true
 
@@ -357,25 +355,25 @@ Set-ADUser -Identity "sqlsvc" -ServicePrincipalNames @{Add="MSSQLSvc/db01.lab.lo
 
 # Create user with weak password
 New-ADUser -Name "Weak User" -SamAccountName "weakuser" -UserPrincipalName "weakuser@lab.local" -Path "OU=Lab Users,DC=lab,DC=local" -AccountPassword (ConvertTo-SecureString "password" -AsPlainText -Force) -Enabled $true
-```
+\`\`\`
 
 ### Configure SMB Shares
-```powershell
+\`\`\`powershell
 # Create shared folders with different permissions
-New-Item -Path "C:\Shares\Public" -ItemType Directory
-New-Item -Path "C:\Shares\Finance" -ItemType Directory
-New-Item -Path "C:\Shares\IT" -ItemType Directory
+New-Item -Path "C:\\Shares\\Public" -ItemType Directory
+New-Item -Path "C:\\Shares\\Finance" -ItemType Directory
+New-Item -Path "C:\\Shares\\IT" -ItemType Directory
 
 # Create SMB shares
-New-SmbShare -Name "Public" -Path "C:\Shares\Public" -FullAccess "Everyone"
-New-SmbShare -Name "Finance" -Path "C:\Shares\Finance" -FullAccess "LAB\Finance Team"
-New-SmbShare -Name "IT" -Path "C:\Shares\IT" -FullAccess "LAB\IT Admins"
-```
+New-SmbShare -Name "Public" -Path "C:\\Shares\\Public" -FullAccess "Everyone"
+New-SmbShare -Name "Finance" -Path "C:\\Shares\\Finance" -FullAccess "LAB\\Finance Team"
+New-SmbShare -Name "IT" -Path "C:\\Shares\\IT" -FullAccess "LAB\\IT Admins"
+\`\`\`
 
 ## Step 10: Testing and Validation
 
 ### Verify Domain Functionality
-```powershell
+\`\`\`powershell
 # Test domain services
 dcdiag /v
 repadmin /showrepl
@@ -387,61 +385,61 @@ nslookup lab.local
 
 # Test DHCP
 Get-DhcpServerv4Lease -ScopeId 192.168.10.0
-```
+\`\`\`
 
 ### Test Authentication
-```bash
+\`\`\`bash
 # From Kali Linux - test SMB enumeration
 smbclient -L //192.168.10.10 -U guest
 enum4linux 192.168.10.10
 
 # Test LDAP enumeration
 ldapsearch -x -h 192.168.10.10 -s base namingcontexts
-```
+\`\`\`
 
 ## Step 11: Security Testing Scenarios
 
 ### Scenario 1: Password Spraying
-```bash
+\`\`\`bash
 # Create user list
-echo -e "jsmith\njdoe\nbjohnson\nawilson\nweakuser" > users.txt
+echo -e "jsmith\\njdoe\\nbjohnson\\nawilson\\nweakuser" > users.txt
 
 # Create password list
-echo -e "Password123!\npassword\nPassword1\nWelcome123" > passwords.txt
+echo -e "Password123!\\npassword\\nPassword1\\nWelcome123" > passwords.txt
 
 # Test with crackmapexec
 crackmapexec smb 192.168.10.10 -u users.txt -p passwords.txt --continue-on-success
-```
+\`\`\`
 
 ### Scenario 2: Kerberoasting
-```bash
+\`\`\`bash
 # Use impacket to request service tickets
 GetUserSPNs.py lab.local/jsmith:Password123! -dc-ip 192.168.10.10 -request
 
 # Crack the tickets with hashcat
 hashcat -m 13100 tickets.txt rockyou.txt
-```
+\`\`\`
 
 ### Scenario 3: SMB Enumeration
-```bash
+\`\`\`bash
 # Enumerate shares
 smbmap -H 192.168.10.10 -u jsmith -p Password123!
 
 # Access shares
 smbclient //192.168.10.10/IT -U jsmith
-```
+\`\`\`
 
 ## Step 12: Incident Response Setup
 
 ### Configure Centralized Logging
 1. **Windows Event Forwarding**
-   ```powershell
+   \`\`\`powershell
    # On collector (DC)
    wecutil qc
    
    # Create subscription
    wecutil cs subscription.xml
-   ```
+   \`\`\`
 
 2. **Syslog Configuration**
    - Configure rsyslog on Kali Linux
@@ -462,25 +460,25 @@ smbclient //192.168.10.10/IT -U jsmith
 ## Step 13: Advanced Configurations
 
 ### Certificate Services
-```powershell
+\`\`\`powershell
 # Install AD Certificate Services
 Install-WindowsFeature -Name ADCS-Cert-Authority -IncludeManagementTools
 
 # Configure CA
 Install-AdcsCertificationAuthority -CAType EnterpriseRootCA -CryptoProviderName "RSA#Microsoft Software Key Storage Provider" -KeyLength 2048 -HashAlgorithmName SHA256 -ValidityPeriod Years -ValidityPeriodUnits 10
-```
+\`\`\`
 
 ### PowerShell Remoting
-```powershell
+\`\`\`powershell
 # Enable PowerShell remoting
 Enable-PSRemoting -Force
 
 # Configure trusted hosts
-Set-Item WSMan:\localhost\Client\TrustedHosts -Value "*.lab.local"
+Set-Item WSMan:\\localhost\\Client\\TrustedHosts -Value "*.lab.local"
 
 # Test remoting
-Enter-PSSession -ComputerName client01.lab.local -Credential lab\jsmith
-```
+Enter-PSSession -ComputerName client01.lab.local -Credential lab\\jsmith
+\`\`\`
 
 ## Step 14: Backup and Snapshots
 
@@ -496,13 +494,13 @@ Enter-PSSession -ComputerName client01.lab.local -Credential lab\jsmith
    - Document restoration procedures
 
 ### Active Directory Backup
-```powershell
+\`\`\`powershell
 # Backup AD database
-wbadmin start backup -backupTarget:E: -include:C:\Windows\NTDS -quiet
+wbadmin start backup -backupTarget:E: -include:C:\\Windows\\NTDS -quiet
 
 # Create system state backup
 wbadmin start systemstatebackup -backupTarget:E: -quiet
-```
+\`\`\`
 
 ## Step 15: Documentation and Maintenance
 
@@ -523,23 +521,23 @@ wbadmin start systemstatebackup -backupTarget:E: -quiet
    - Update procedures
 
 ### Maintenance Tasks
-```powershell
+\`\`\`powershell
 # Regular maintenance script
 # Update Windows systems
 Install-Module PSWindowsUpdate
 Get-WUInstall -AcceptAll -AutoReboot
 
 # Check AD health
-dcdiag /v | Out-File "C:\Logs\dcdiag_$(Get-Date -Format 'yyyyMMdd').log"
+dcdiag /v | Out-File "C:\\Logs\\dcdiag_$(Get-Date -Format 'yyyyMMdd').log"
 
 # Backup AD
 wbadmin start systemstatebackup -backupTarget:E: -quiet
-```
+\`\`\`
 
 ## Troubleshooting Common Issues
 
 ### DNS Resolution Problems
-```powershell
+\`\`\`powershell
 # Check DNS configuration
 Get-DnsClientServerAddress
 ipconfig /all
@@ -549,22 +547,22 @@ ipconfig /flushdns
 
 # Test DNS resolution
 nslookup dc01.lab.local
-```
+\`\`\`
 
 ### Domain Join Issues
-```powershell
+\`\`\`powershell
 # Check time synchronization
 w32tm /query /status
 
 # Reset computer account
-Reset-ComputerMachinePassword -Credential lab\Administrator
+Reset-ComputerMachinePassword -Credential lab\\Administrator
 
 # Test secure channel
 Test-ComputerSecureChannel -Repair
-```
+\`\`\`
 
 ### Authentication Problems
-```powershell
+\`\`\`powershell
 # Check Kerberos tickets
 klist
 
@@ -572,8 +570,8 @@ klist
 klist purge
 
 # Test authentication
-runas /user:lab\jsmith cmd
-```
+runas /user:lab\\jsmith cmd
+\`\`\`
 
 ## Security Best Practices
 
@@ -706,7 +704,7 @@ Vulnerability scanning is the automated process of identifying security weakness
 - **Documentation Tools**: Report generation capabilities
 
 ### Network Architecture
-```
+\`\`\`
 [Scanner] ──── [Switch] ──── [Target Systems]
     │                           │
     │                           ├── Windows Server
@@ -715,12 +713,12 @@ Vulnerability scanning is the automated process of identifying security weakness
     │                           └── Database Server
     │
 [Management Network]
-```
+\`\`\`
 
 ## Tool 1: Nmap - Network Discovery and Port Scanning
 
 ### Installation and Setup
-```bash
+\`\`\`bash
 # Install Nmap on Kali Linux (usually pre-installed)
 sudo apt update
 sudo apt install nmap
@@ -730,12 +728,12 @@ nmap --version
 
 # Install additional scripts
 sudo apt install nmap-scripts
-```
+\`\`\`
 
 ### Basic Nmap Usage
 
 #### Host Discovery
-```bash
+\`\`\`bash
 # Ping sweep to discover live hosts
 nmap -sn 192.168.1.0/24
 
@@ -747,10 +745,10 @@ nmap -PS 192.168.1.1-254
 
 # UDP ping
 nmap -PU 192.168.1.1-254
-```
+\`\`\`
 
 #### Port Scanning
-```bash
+\`\`\`bash
 # Basic TCP scan
 nmap 192.168.1.100
 
@@ -765,10 +763,10 @@ nmap -p- 192.168.1.100
 
 # UDP scan (slower)
 nmap -sU 192.168.1.100
-```
+\`\`\`
 
 #### Service Detection
-```bash
+\`\`\`bash
 # Service version detection
 nmap -sV 192.168.1.100
 
@@ -780,12 +778,12 @@ nmap -A 192.168.1.100
 
 # Script scanning
 nmap --script default 192.168.1.100
-```
+\`\`\`
 
 ### Advanced Nmap Techniques
 
 #### Stealth Scanning
-```bash
+\`\`\`bash
 # SYN stealth scan
 nmap -sS 192.168.1.100
 
@@ -797,10 +795,10 @@ nmap -sN 192.168.1.100
 
 # Xmas scan
 nmap -sX 192.168.1.100
-```
+\`\`\`
 
 #### Timing and Performance
-```bash
+\`\`\`bash
 # Timing templates (0-5, 5 is fastest)
 nmap -T4 192.168.1.100
 
@@ -809,10 +807,10 @@ nmap --min-rate 1000 --max-rate 5000 192.168.1.100
 
 # Parallel scanning
 nmap --min-parallelism 10 --max-parallelism 50 192.168.1.100
-```
+\`\`\`
 
 #### Nmap Scripting Engine (NSE)
-```bash
+\`\`\`bash
 # List available scripts
 nmap --script-help all
 
@@ -827,21 +825,21 @@ nmap --script http-enum 192.168.1.100
 
 # SSL/TLS testing
 nmap --script ssl-enum-ciphers -p 443 192.168.1.100
-```
+\`\`\`
 
 ### Practical Nmap Examples
 
 #### Web Server Assessment
-```bash
+\`\`\`bash
 # Comprehensive web server scan
 nmap -sS -sV -O -A --script http-enum,http-headers,http-methods,http-robots.txt -p 80,443,8080,8443 192.168.1.100
 
 # Check for common vulnerabilities
 nmap --script http-vuln-* -p 80,443 192.168.1.100
-```
+\`\`\`
 
 #### Database Server Scanning
-```bash
+\`\`\`bash
 # MySQL scanning
 nmap --script mysql-* -p 3306 192.168.1.100
 
@@ -850,14 +848,14 @@ nmap --script ms-sql-* -p 1433 192.168.1.100
 
 # Oracle scanning
 nmap --script oracle-* -p 1521 192.168.1.100
-```
+\`\`\`
 
 ## Tool 2: OpenVAS - Comprehensive Vulnerability Scanner
 
 ### Installation and Setup
 
 #### Installing OpenVAS on Kali Linux
-```bash
+\`\`\`bash
 # Install OpenVAS
 sudo apt update
 sudo apt install openvas
@@ -870,10 +868,10 @@ sudo gvm-check-setup
 
 # Start services
 sudo gvm-start
-```
+\`\`\`
 
 #### Initial Configuration
-```bash
+\`\`\`bash
 # Create admin user
 sudo runuser -u _gvm -- gvmd --create-user=admin --password=admin123
 
@@ -881,12 +879,12 @@ sudo runuser -u _gvm -- gvmd --create-user=admin --password=admin123
 sudo runuser -u _gvm -- greenbone-feed-sync --type GVMD_DATA
 sudo runuser -u _gvm -- greenbone-feed-sync --type SCAP
 sudo runuser -u _gvm -- greenbone-feed-sync --type CERT
-```
+\`\`\`
 
 ### OpenVAS Web Interface
 
 #### Accessing the Interface
-1. Open browser to `https://localhost:9392`
+1. Open browser to \`https://localhost:9392\`
 2. Login with created credentials
 3. Navigate through the dashboard
 
@@ -896,13 +894,13 @@ sudo runuser -u _gvm -- greenbone-feed-sync --type CERT
 1. **Create Target**
    - Go to Configuration → Targets
    - Click "New Target"
-   - Enter target IP range: `192.168.1.0/24`
-   - Set port range: `1-65535`
+   - Enter target IP range: \`192.168.1.0/24\`
+   - Set port range: \`1-65535\`
    - Save target
 
 2. **Create Scan Configuration**
    - Go to Configuration → Scan Configs
-   - Clone "Full and fast\" configuration
+   - Clone "Full and fast" configuration
    - Customize as needed
    - Save configuration
 
@@ -915,10 +913,10 @@ sudo runuser -u _gvm -- greenbone-feed-sync --type CERT
 #### Advanced Scan Configurations
 
 ##### Authenticated Scanning
-```bash
+\`\`\`bash
 # For Windows targets
 # Create credentials with:
-# - Username: domain\username
+# - Username: domain\\username
 # - Password: user_password
 # - Type: Username + Password
 
@@ -927,7 +925,7 @@ sudo runuser -u _gvm -- greenbone-feed-sync --type CERT
 # - Username: root or sudo user
 # - Private key or password
 # - Type: Username + SSH Key
-```
+\`\`\`
 
 ##### Custom Scan Policies
 1. **Web Application Scan**
@@ -952,7 +950,7 @@ sudo runuser -u _gvm -- greenbone-feed-sync --type CERT
 - **Log (0.0)**: No security impact
 
 #### Report Analysis
-```bash
+\`\`\`bash
 # Generate detailed reports
 # Export formats: PDF, XML, CSV, HTML
 
@@ -961,14 +959,14 @@ sudo runuser -u _gvm -- greenbone-feed-sync --type CERT
 # 2. Vulnerability Details
 # 3. Host Information
 # 4. Remediation Recommendations
-```
+\`\`\`
 
 ## Tool 3: Nessus - Professional Vulnerability Scanner
 
 ### Installation and Setup
 
 #### Installing Nessus
-```bash
+\`\`\`bash
 # Download Nessus from Tenable website
 wget https://www.tenable.com/downloads/api/v1/public/pages/nessus/downloads/[version]/nessus-[version]-debian6_amd64.deb
 
@@ -981,7 +979,7 @@ sudo systemctl enable nessusd
 
 # Access web interface
 # https://localhost:8834
-```
+\`\`\`
 
 #### Initial Configuration
 1. **Create Admin Account**
@@ -1013,9 +1011,9 @@ sudo systemctl enable nessusd
 #### Advanced Scan Settings
 
 ##### Credentials Configuration
-```bash
+\`\`\`bash
 # Windows Credentials
-Username: DOMAIN\username
+Username: DOMAIN\\username
 Password: password
 Domain: DOMAIN
 
@@ -1029,10 +1027,10 @@ Private Key: [SSH private key]
 Username: sa
 Password: password
 Database Type: SQL Server
-```
+\`\`\`
 
 ##### Performance Tuning
-```bash
+\`\`\`bash
 # Scan Settings
 Max simultaneous hosts: 5
 Max simultaneous checks per host: 5
@@ -1043,7 +1041,7 @@ Max checks per host: 5
 Enable safe checks: Yes
 Stop host enumeration on unresponsive: Yes
 Consider unscanned ports as closed: No
-```
+\`\`\`
 
 ### Custom Vulnerability Checks
 
@@ -1061,7 +1059,7 @@ Consider unscanned ports as closed: No
    - Test policy effectiveness
 
 #### Writing Custom Plugins
-```nasl
+\`\`\`nasl
 # Example NASL script structure
 include("compat.inc");
 
@@ -1084,12 +1082,12 @@ if (!get_port_state(port)) exit(0);
 
 # Vulnerability check logic
 # Report findings if vulnerability exists
-```
+\`\`\`
 
 ## Tool 4: Specialized Scanners
 
 ### Nikto - Web Vulnerability Scanner
-```bash
+\`\`\`bash
 # Install Nikto
 sudo apt install nikto
 
@@ -1104,10 +1102,10 @@ nikto -h http://192.168.1.100 -id username:password
 
 # Scan specific CGI directories
 nikto -h http://192.168.1.100 -C all
-```
+\`\`\`
 
 ### SQLMap - SQL Injection Scanner
-```bash
+\`\`\`bash
 # Install SQLMap
 sudo apt install sqlmap
 
@@ -1122,10 +1120,10 @@ sqlmap -u "http://192.168.1.100/page.php?id=1" --dbs
 
 # Dump specific database
 sqlmap -u "http://192.168.1.100/page.php?id=1" -D database_name --dump
-```
+\`\`\`
 
 ### SSLyze - SSL/TLS Scanner
-```bash
+\`\`\`bash
 # Install SSLyze
 pip install sslyze
 
@@ -1137,7 +1135,7 @@ sslyze --regular 192.168.1.100:443
 
 # Check for specific vulnerabilities
 sslyze --heartbleed --openssl_ccs --fallback 192.168.1.100:443
-```
+\`\`\`
 
 ## Vulnerability Assessment Methodology
 
@@ -1155,7 +1153,7 @@ sslyze --heartbleed --openssl_ccs --fallback 192.168.1.100:443
    - Known issues
 
 ### Phase 2: Discovery and Enumeration
-```bash
+\`\`\`bash
 # Network discovery
 nmap -sn 192.168.1.0/24 > live_hosts.txt
 
@@ -1163,11 +1161,11 @@ nmap -sn 192.168.1.0/24 > live_hosts.txt
 nmap -sS -T4 -p- --open -iL live_hosts.txt -oA port_scan
 
 # Service enumeration
-nmap -sV -sC -p $(cat port_scan.nmap | grep "^[0-9]" | cut -d'/' -f1 | tr '\n' ',' | sed 's/,$//') -iL live_hosts.txt -oA service_scan
-```
+nmap -sV -sC -p $(cat port_scan.nmap | grep "^[0-9]" | cut -d'/' -f1 | tr '\\n' ',' | sed 's/,$//') -iL live_hosts.txt -oA service_scan
+\`\`\`
 
 ### Phase 3: Vulnerability Scanning
-```bash
+\`\`\`bash
 # Automated vulnerability scanning
 openvas-cli -X '<create_task><name>Network Scan</name><target id="target_id"/><config id="config_id"/></create_task>'
 
@@ -1176,7 +1174,7 @@ nmap --script vuln -iL live_hosts.txt
 
 # Web application testing
 nikto -h http://192.168.1.100 -Format htm -output web_scan.html
-```
+\`\`\`
 
 ### Phase 4: Analysis and Validation
 1. **False Positive Identification**
@@ -1206,7 +1204,7 @@ nikto -h http://192.168.1.100 -Format htm -output web_scan.html
 ## Automated Scanning with Scripts
 
 ### Bash Script for Automated Scanning
-```bash
+\`\`\`bash
 #!/bin/bash
 
 # Automated Vulnerability Scanning Script
@@ -1271,10 +1269,10 @@ EOF
 
 echo "[+] Scan completed. Results saved to $OUTPUT_DIR"
 echo "[+] Review scan_summary.txt for overview"
-```
+\`\`\`
 
 ### Python Script for Report Parsing
-```python
+\`\`\`python
 #!/usr/bin/env python3
 
 import xml.etree.ElementTree as ET
@@ -1330,18 +1328,18 @@ if __name__ == "__main__":
     report = generate_report(vulnerabilities)
     
     print(json.dumps(report, indent=2))
-```
+\`\`\`
 
 ## Remediation Strategies
 
 ### Patch Management
 1. **Prioritization Matrix**
-   ```
+   \`\`\`
    Critical + High Exploitability = Immediate (0-7 days)
    High + Medium Exploitability = High Priority (8-30 days)
    Medium + Low Exploitability = Medium Priority (31-90 days)
    Low + Any Exploitability = Low Priority (91+ days)
-   ```
+   \`\`\`
 
 2. **Patch Testing Process**
    - Test in development environment
@@ -1350,7 +1348,7 @@ if __name__ == "__main__":
    - Schedule maintenance windows
 
 ### Configuration Hardening
-```bash
+\`\`\`bash
 # Example hardening checklist
 # 1. Disable unnecessary services
 systemctl disable telnet
@@ -1374,7 +1372,7 @@ auditd enable
 
 # 5. Apply security updates
 apt update && apt upgrade -y
-```
+\`\`\`
 
 ### Network Segmentation
 1. **VLAN Implementation**
@@ -1410,7 +1408,7 @@ apt update && apt upgrade -y
 ### Report Templates
 
 #### Executive Summary Template
-```
+\`\`\`
 VULNERABILITY ASSESSMENT EXECUTIVE SUMMARY
 
 Assessment Period: [Date Range]
@@ -1439,10 +1437,10 @@ REMEDIATION TIMELINE:
 - High: 30 days
 - Medium: 90 days
 - Low: Next maintenance window
-```
+\`\`\`
 
 #### Technical Report Template
-```
+\`\`\`
 TECHNICAL VULNERABILITY ASSESSMENT REPORT
 
 1. METHODOLOGY
@@ -1472,7 +1470,7 @@ TECHNICAL VULNERABILITY ASSESSMENT REPORT
    - Raw scan data
    - Tool configurations
    - Reference materials
-```
+\`\`\`
 
 ## Continuous Improvement
 
@@ -1535,7 +1533,7 @@ Effective vulnerability scanning requires:
    - Tool optimization
    - Staff training
 
-By following this comprehensive guide, you'll be able to implement an effective vulnerability scanning program that significantly improves your organization\'s security posture. Remember that vulnerability scanning is just one component of a comprehensive security program – it must be combined with other security controls, processes, and practices to provide effective protection.
+By following this comprehensive guide, you'll be able to implement an effective vulnerability scanning program that significantly improves your organization's security posture. Remember that vulnerability scanning is just one component of a comprehensive security program – it must be combined with other security controls, processes, and practices to provide effective protection.
 
 The key to success is consistency, thoroughness, and continuous improvement. Start with basic scans and gradually implement more advanced techniques as your skills and program mature.
     `,
@@ -1673,25 +1671,25 @@ Personnel data includes any information relating to an identified or identifiabl
 ### Data Inventory Process
 
 #### Step 1: Discovery and Mapping
-```bash
+\`\`\`bash
 # Example data discovery script
 #!/bin/bash
 
 # Search for potential SSN patterns
-find /data -type f -name "*.csv" -o -name "*.xlsx" -o -name "*.txt" | \
-xargs grep -l "[0-9]\{3\}-[0-9]\{2\}-[0-9]\{4\}"
+find /data -type f -name "*.csv" -o -name "*.xlsx" -o -name "*.txt" | \\
+xargs grep -l "[0-9]\\{3\\}-[0-9]\\{2\\}-[0-9]\\{4\\}"
 
 # Search for email patterns
-find /data -type f -name "*.csv" -o -name "*.xlsx" -o -name "*.txt" | \
-xargs grep -l "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]\{2,\}"
+find /data -type f -name "*.csv" -o -name "*.xlsx" -o -name "*.txt" | \\
+xargs grep -l "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]\\{2,\\}"
 
 # Search for phone number patterns
-find /data -type f -name "*.csv" -o -name "*.xlsx" -o -name "*.txt" | \
-xargs grep -l "[0-9]\{3\}-[0-9]\{3\}-[0-9]\{4\}"
-```
+find /data -type f -name "*.csv" -o -name "*.xlsx" -o -name "*.txt" | \\
+xargs grep -l "[0-9]\\{3\\}-[0-9]\\{3\\}-[0-9]\\{4\\}"
+\`\`\`
 
 #### Step 2: Data Mapping Template
-```
+\`\`\`
 DATA INVENTORY RECORD
 
 Data Element: [Name of data field]
@@ -1709,10 +1707,10 @@ Backup Location: [Where backed up]
 Legal Basis: [Why collected]
 Purpose: [How used]
 Sharing: [Who receives copies]
-```
+\`\`\`
 
 #### Step 3: Automated Discovery Tools
-```python
+\`\`\`python
 #!/usr/bin/env python3
 
 import re
@@ -1723,10 +1721,10 @@ from pathlib import Path
 class PersonalDataScanner:
     def __init__(self):
         self.patterns = {
-            'ssn': r'\b\d{3}-\d{2}-\d{4}\b',
-            'email': r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
-            'phone': r'\b\d{3}-\d{3}-\d{4}\b',
-            'credit_card': r'\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b'
+            'ssn': r'\\b\\d{3}-\\d{2}-\\d{4}\\b',
+            'email': r'\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b',
+            'phone': r'\\b\\d{3}-\\d{3}-\\d{4}\\b',
+            'credit_card': r'\\b\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}\\b'
         }
         
     def scan_file(self, filepath):
@@ -1770,14 +1768,14 @@ with open('data_discovery_report.csv', 'w', newline='') as csvfile:
     writer.writeheader()
     for finding in findings:
         writer.writerow(finding)
-```
+\`\`\`
 
 ## Access Control Implementation
 
 ### Role-Based Access Control (RBAC)
 
 #### Role Definition
-```
+\`\`\`
 HR_ADMINISTRATOR
 - Full access to all personnel data
 - Can create, read, update, delete records
@@ -1807,10 +1805,10 @@ PAYROLL_ADMINISTRATOR
 - Can read financial records
 - Cannot access medical or disciplinary records
 - Can generate payroll reports
-```
+\`\`\`
 
 #### Active Directory Implementation
-```powershell
+\`\`\`powershell
 # Create security groups for personnel data access
 New-ADGroup -Name "HR-Administrators" -GroupScope Global -GroupCategory Security
 New-ADGroup -Name "HR-Specialists" -GroupScope Global -GroupCategory Security
@@ -1821,28 +1819,28 @@ New-ADGroup -Name "Managers" -GroupScope Global -GroupCategory Security
 New-ADUser -Name "HR-System-Service" -SamAccountName "hr-svc" -UserPrincipalName "hr-svc@company.com" -Path "OU=Service Accounts,DC=company,DC=com" -AccountPassword (ConvertTo-SecureString "ComplexPassword123!" -AsPlainText -Force) -Enabled $true
 
 # Set up file system permissions
-$HRPath = "\\fileserver\HR-Data"
+$HRPath = "\\\\fileserver\\HR-Data"
 $ACL = Get-Acl $HRPath
 
 # Remove inherited permissions
 $ACL.SetAccessRuleProtection($true, $false)
 
 # Add specific permissions
-$AccessRule1 = New-Object System.Security.AccessControl.FileSystemAccessRule("COMPANY\HR-Administrators", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow")
-$AccessRule2 = New-Object System.Security.AccessControl.FileSystemAccessRule("COMPANY\HR-Specialists", "ReadAndExecute,Write", "ContainerInherit,ObjectInherit", "None", "Allow")
-$AccessRule3 = New-Object System.Security.AccessControl.FileSystemAccessRule("COMPANY\Payroll-Administrators", "ReadAndExecute", "ContainerInherit,ObjectInherit", "None", "Allow")
+$AccessRule1 = New-Object System.Security.AccessControl.FileSystemAccessRule("COMPANY\\HR-Administrators", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow")
+$AccessRule2 = New-Object System.Security.AccessControl.FileSystemAccessRule("COMPANY\\HR-Specialists", "ReadAndExecute,Write", "ContainerInherit,ObjectInherit", "None", "Allow")
+$AccessRule3 = New-Object System.Security.AccessControl.FileSystemAccessRule("COMPANY\\Payroll-Administrators", "ReadAndExecute", "ContainerInherit,ObjectInherit", "None", "Allow")
 
 $ACL.SetAccessRule($AccessRule1)
 $ACL.SetAccessRule($AccessRule2)
 $ACL.SetAccessRule($AccessRule3)
 
 Set-Acl -Path $HRPath -AclObject $ACL
-```
+\`\`\`
 
 ### Database Access Controls
 
 #### SQL Server Implementation
-```sql
+\`\`\`sql
 -- Create database roles
 CREATE ROLE hr_admin;
 CREATE ROLE hr_specialist;
@@ -1882,10 +1880,10 @@ CREATE SECURITY POLICY personnel.manager_policy
 ADD FILTER PREDICATE personnel.manager_security_predicate(manager_id)
 ON personnel.employees
 WITH (STATE = ON);
-```
+\`\`\`
 
 #### Application-Level Access Controls
-```python
+\`\`\`python
 # Example Flask application with role-based access
 from flask import Flask, request, session, abort
 from functools import wraps
@@ -1934,14 +1932,14 @@ def get_employee_salary(employee_id):
 def get_employee_medical(employee_id):
     # Only HR admins can access medical data
     return get_medical_data(employee_id)
-```
+\`\`\`
 
 ## Encryption Implementation
 
 ### Data at Rest Encryption
 
 #### Database Encryption (SQL Server)
-```sql
+\`\`\`sql
 -- Create master key
 CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'StrongPassword123!';
 
@@ -1980,10 +1978,10 @@ SELECT
     hire_date,
     department
 FROM personnel.employees;
-```
+\`\`\`
 
 #### File System Encryption (Linux)
-```bash
+\`\`\`bash
 # Install encryption tools
 sudo apt install cryptsetup
 
@@ -2007,10 +2005,10 @@ echo "/dev/mapper/hr_data /mnt/hr_data ext4 defaults 0 2" | sudo tee -a /etc/fst
 # Set permissions
 sudo chown -R hr_admin:hr_group /mnt/hr_data
 sudo chmod 750 /mnt/hr_data
-```
+\`\`\`
 
 #### Application-Level Encryption
-```python
+\`\`\`python
 from cryptography.fernet import Fernet
 import base64
 import os
@@ -2067,12 +2065,12 @@ store_employee_data(
 # Decrypt when needed
 original_ssn = encryption.decrypt_ssn(encrypted_ssn)
 original_salary = encryption.decrypt_salary(encrypted_salary)
-```
+\`\`\`
 
 ### Data in Transit Encryption
 
 #### TLS Configuration (Apache)
-```apache
+\`\`\`apache
 # Enable SSL module
 LoadModule ssl_module modules/mod_ssl.so
 
@@ -2098,10 +2096,10 @@ LoadModule ssl_module modules/mod_ssl.so
     Header always set X-Frame-Options DENY
     Header always set X-XSS-Protection "1; mode=block"
 </VirtualHost>
-```
+\`\`\`
 
 #### Database Connection Encryption
-```python
+\`\`\`python
 import pyodbc
 import ssl
 
@@ -2132,14 +2130,14 @@ conn = psycopg2.connect(
     sslkey="/path/to/client-key.pem",
     sslrootcert="/path/to/ca-cert.pem"
 )
-```
+\`\`\`
 
 ## Data Loss Prevention (DLP)
 
 ### Email DLP Configuration
 
 #### Microsoft 365 DLP Policy
-```powershell
+\`\`\`powershell
 # Connect to Security & Compliance Center
 Connect-IPPSSession
 
@@ -2158,10 +2156,10 @@ New-DlpRule -Policy $DLPPolicy -Name "Employee Data Detection" -ContentMatchesDa
     Name="Employee ID"
     minCount="5"
 } -BlockAccess $false -NotifyUser $true -GenerateIncidentReport $true
-```
+\`\`\`
 
 #### Network DLP (Forcepoint/Symantec)
-```xml
+\`\`\`xml
 <!-- DLP Policy Configuration -->
 <dlp-policy name="Personnel Data Protection">
     <rules>
@@ -2191,12 +2189,12 @@ New-DlpRule -Policy $DLPPolicy -Name "Employee Data Detection" -ContentMatchesDa
         </rule>
     </rules>
 </dlp-policy>
-```
+\`\`\`
 
 ### Endpoint DLP Implementation
 
 #### Windows Endpoint DLP
-```powershell
+\`\`\`powershell
 # Configure Windows Information Protection (WIP)
 $WIPPolicy = @{
     Identity = "PersonnelDataProtection"
@@ -2213,14 +2211,14 @@ $WIPPolicy = @{
         "hr.company.com",
         "personnel.company.com"
     )
-    DataRecoveryAgent = "COMPANY\DRA-Account"
+    DataRecoveryAgent = "COMPANY\\DRA-Account"
 }
 
 New-WIPPolicy @WIPPolicy
-```
+\`\`\`
 
 #### Linux Endpoint Monitoring
-```bash
+\`\`\`bash
 #!/bin/bash
 
 # Monitor file access to personnel data
@@ -2238,7 +2236,7 @@ cat > /usr/local/bin/personnel_audit.sh << 'EOF'
 #!/bin/bash
 
 # Analyze personnel data access
-ausearch -k personnel_access -ts today | \
+ausearch -k personnel_access -ts today | \\
 awk '/type=SYSCALL/ {
     for(i=1; i<=NF; i++) {
         if($i ~ /^uid=/) uid=$i
@@ -2249,24 +2247,24 @@ awk '/type=SYSCALL/ {
 }'
 
 # Check for suspicious patterns
-ausearch -k personnel_access -ts today | \
-grep -E "(DELETE|WRITE)" | \
-awk '{print $1, $2, $3}' | \
+ausearch -k personnel_access -ts today | \\
+grep -E "(DELETE|WRITE)" | \\
+awk '{print $1, $2, $3}' | \\
 sort | uniq -c | sort -nr | head -10
 EOF
 
 chmod +x /usr/local/bin/personnel_audit.sh
-```
+\`\`\`
 
 ## Monitoring and Auditing
 
 ### Database Activity Monitoring
 
 #### SQL Server Audit
-```sql
+\`\`\`sql
 -- Create server audit
 CREATE SERVER AUDIT PersonnelDataAudit
-TO FILE (FILEPATH = 'C:\Audit\PersonnelData\')
+TO FILE (FILEPATH = 'C:\\Audit\\PersonnelData\\')
 WITH (MAXSIZE = 100 MB, MAX_ROLLOVER_FILES = 10);
 
 -- Enable server audit
@@ -2291,13 +2289,13 @@ SELECT
     object_name,
     statement,
     succeeded
-FROM sys.fn_get_audit_file('C:\Audit\PersonnelData\*.sqlaudit', DEFAULT, DEFAULT)
+FROM sys.fn_get_audit_file('C:\\Audit\\PersonnelData\\*.sqlaudit', DEFAULT, DEFAULT)
 WHERE schema_name = 'personnel'
 ORDER BY event_time DESC;
-```
+\`\`\`
 
 #### Application Audit Logging
-```python
+\`\`\`python
 import logging
 import json
 from datetime import datetime
@@ -2358,12 +2356,12 @@ def get_employee(employee_id):
 @audit_access('view_salary')
 def get_employee_salary(employee_id):
     return get_salary_data(employee_id)
-```
+\`\`\`
 
 ### SIEM Integration
 
 #### Splunk Configuration
-```conf
+\`\`\`conf
 # inputs.conf
 [monitor:///var/log/personnel_audit.log]
 disabled = false
@@ -2394,10 +2392,10 @@ alert.severity = 3
 action.email = 1
 action.email.to = security@company.com
 action.email.subject = Excessive Personnel Data Access Detected
-```
+\`\`\`
 
 #### ELK Stack Configuration
-```yaml
+\`\`\`yaml
 # logstash.conf
 input {
   file {
@@ -2433,12 +2431,12 @@ output {
     index => "personnel-security-%{+YYYY.MM.dd}"
   }
 }
-```
+\`\`\`
 
 ### Compliance Reporting
 
 #### GDPR Compliance Report
-```python
+\`\`\`python
 def generate_gdpr_compliance_report():
     """Generate GDPR compliance report"""
     
@@ -2508,14 +2506,14 @@ def generate_gdpr_compliance_report():
 monthly_report = generate_gdpr_compliance_report()
 with open(f'gdpr_compliance_{datetime.now().strftime("%Y%m")}.json', 'w') as f:
     json.dump(monthly_report, f, indent=2)
-```
+\`\`\`
 
 ## Incident Response for Personnel Data
 
 ### Incident Classification
 
 #### Severity Levels
-```
+\`\`\`
 CRITICAL (Severity 1):
 - Unauthorized access to >1000 employee records
 - Public exposure of sensitive personnel data
@@ -2539,12 +2537,12 @@ LOW (Severity 4):
 - Successful security controls
 - Training incidents
 - Documentation updates
-```
+\`\`\`
 
 ### Incident Response Procedures
 
 #### Data Breach Response Plan
-```python
+\`\`\`python
 class PersonnelDataBreachResponse:
     def __init__(self):
         self.incident_id = None
@@ -2637,10 +2635,10 @@ class PersonnelDataBreachResponse:
         notifications.append(self.notify_legal_team())
         
         return notifications
-```
+\`\`\`
 
 #### Automated Incident Detection
-```python
+\`\`\`python
 import pandas as pd
 from datetime import datetime, timedelta
 
@@ -2720,14 +2718,14 @@ class PersonnelDataAnomalyDetector:
         ]
         
         return bulk_users.to_dict('records')
-```
+\`\`\`
 
 ## Data Retention and Disposal
 
 ### Retention Policy Framework
 
 #### Retention Schedule
-```
+\`\`\`
 PERSONNEL DATA RETENTION SCHEDULE
 
 Employee Records:
@@ -2759,10 +2757,10 @@ Application Materials:
 - Hired candidates: Convert to employee record
 - Rejected candidates: 2 years after application
 - Interview notes: 2 years after application
-```
+\`\`\`
 
 #### Automated Retention Management
-```python
+\`\`\`python
 from datetime import datetime, timedelta
 import logging
 
@@ -2866,10 +2864,10 @@ class PersonnelDataRetentionManager:
                 file.seek(0)
                 if pass_num == 0:
                     # First pass: write zeros
-                    file.write(b'\x00' * file_size)
+                    file.write(b'\\x00' * file_size)
                 elif pass_num == 1:
                     # Second pass: write ones
-                    file.write(b'\xFF' * file_size)
+                    file.write(b'\\xFF' * file_size)
                 else:
                     # Third pass: write random data
                     random_data = bytes([random.randint(0, 255) for _ in range(file_size)])
@@ -2879,12 +2877,12 @@ class PersonnelDataRetentionManager:
         
         # Finally, delete the file
         os.remove(file_path)
-```
+\`\`\`
 
 ### Legal Hold Management
 
 #### Legal Hold System
-```python
+\`\`\`python
 class LegalHoldManager:
     def __init__(self):
         self.active_holds = self.load_active_holds()
@@ -2950,14 +2948,14 @@ class LegalHoldManager:
         self.document_hold_release(hold)
         
         return hold
-```
+\`\`\`
 
 ## Training and Awareness
 
 ### Security Awareness Program
 
 #### Training Curriculum
-```
+\`\`\`
 PERSONNEL DATA SECURITY TRAINING PROGRAM
 
 Module 1: Introduction to Data Privacy (30 minutes)
@@ -2995,10 +2993,10 @@ Assessment and Certification (30 minutes)
 - Practical scenarios
 - Certification requirements
 - Ongoing training schedule
-```
+\`\`\`
 
 #### Training Tracking System
-```python
+\`\`\`python
 class PersonnelSecurityTraining:
     def __init__(self):
         self.training_requirements = self.load_training_requirements()
@@ -3078,7 +3076,7 @@ class PersonnelSecurityTraining:
         report['overall_compliance'] = (compliant_employees / len(all_employees)) * 100
         
         return report
-```
+\`\`\`
 
 ## Conclusion
 
@@ -3168,13 +3166,13 @@ Effective security awareness training addresses these challenges by:
 5. **Incident Response**: Improve recognition and reporting of security threats
 
 #### SMART Objectives Framework
-```
+\`\`\`
 Specific: Reduce phishing click rates by 50%
 Measurable: Track click rates through simulated phishing campaigns
 Achievable: Based on industry benchmarks and current baseline
 Relevant: Addresses primary attack vector for the organization
 Time-bound: Achieve within 12 months of program launch
-```
+\`\`\`
 
 ### Stakeholder Engagement
 
@@ -3185,7 +3183,7 @@ Time-bound: Achieve within 12 months of program launch
 - Ensure leadership participation and modeling
 
 #### Key Stakeholders
-```
+\`\`\`
 STAKEHOLDER MATRIX
 
 Executive Leadership:
@@ -3217,12 +3215,12 @@ Employees:
 - Role: Active participation and feedback
 - Engagement: Continuous training and communication
 - Deliverables: Training completion and feedback surveys
-```
+\`\`\`
 
 ### Program Governance
 
 #### Steering Committee Structure
-```
+\`\`\`
 SECURITY AWARENESS STEERING COMMITTEE
 
 Chair: Chief Information Security Officer (CISO)
@@ -3241,10 +3239,10 @@ Responsibilities:
 - Policy development and updates
 - Performance review and improvement
 - Incident response coordination
-```
+\`\`\`
 
 #### Roles and Responsibilities
-```python
+\`\`\`python
 # Example governance structure
 governance_structure = {
     'program_manager': {
@@ -3287,14 +3285,14 @@ governance_structure = {
         ]
     }
 }
-```
+\`\`\`
 
 ## Audience Analysis and Segmentation
 
 ### Employee Segmentation
 
 #### By Role and Risk Level
-```
+\`\`\`
 HIGH-RISK ROLES:
 - Executives and senior management
 - IT administrators and developers
@@ -3313,10 +3311,10 @@ LOWER-RISK ROLES:
 - Warehouse staff
 - Maintenance personnel
 - Part-time employees
-```
+\`\`\`
 
 #### By Technical Proficiency
-```
+\`\`\`
 TECHNICAL EXPERTS:
 - IT professionals
 - Software developers
@@ -3340,12 +3338,12 @@ LIMITED TECHNOLOGY USERS:
 - Warehouse staff
 - Maintenance crews
 - Temporary employees
-```
+\`\`\`
 
 ### Learning Preferences Assessment
 
 #### Learning Style Analysis
-```python
+\`\`\`python
 def assess_learning_preferences():
     """Assess organizational learning preferences"""
     
@@ -3420,14 +3418,14 @@ def create_multi_modal_content(topic, learning_styles):
     })
     
     return content_formats
-```
+\`\`\`
 
 ## Content Development Strategy
 
 ### Core Training Topics
 
 #### Foundation Topics (All Employees)
-```
+\`\`\`
 1. CYBERSECURITY FUNDAMENTALS
    - What is cybersecurity?
    - Common threats and attack methods
@@ -3457,10 +3455,10 @@ def create_multi_modal_content(topic, learning_styles):
    - Reporting procedures
    - Response expectations
    - No-blame culture
-```
+\`\`\`
 
 #### Advanced Topics (Role-Specific)
-```
+\`\`\`
 IT PROFESSIONALS:
 - Secure coding practices
 - System hardening
@@ -3490,12 +3488,12 @@ REMOTE WORKERS:
 - VPN usage
 - Cloud service security
 - Mobile device management
-```
+\`\`\`
 
 ### Content Creation Framework
 
 #### Microlearning Approach
-```python
+\`\`\`python
 class MicrolearningModule:
     def __init__(self, topic, duration=5):
         self.topic = topic
@@ -3554,10 +3552,10 @@ phishing_module.add_assessment(
         'incorrect': "Look for red flags like urgent language, requests for credentials, and sender verification."
     }
 )
-```
+\`\`\`
 
 #### Storytelling and Scenarios
-```python
+\`\`\`python
 def create_security_scenario(role, threat_type, complexity='medium'):
     """Create realistic security scenarios for training"""
     
@@ -3620,14 +3618,14 @@ def generate_scenario_training(target_roles):
             })
     
     return training_scenarios
-```
+\`\`\`
 
 ## Delivery Methods and Platforms
 
 ### Multi-Channel Delivery Strategy
 
 #### Primary Delivery Channels
-```
+\`\`\`
 LEARNING MANAGEMENT SYSTEM (LMS):
 - Formal training modules
 - Progress tracking
@@ -3663,10 +3661,10 @@ SIMULATED ATTACKS:
 - Social engineering tests
 - Physical security tests
 - Response training
-```
+\`\`\`
 
 #### Technology Platform Selection
-```python
+\`\`\`python
 def evaluate_training_platforms():
     """Evaluate training platform options"""
     
@@ -3745,12 +3743,12 @@ def evaluate_training_platforms():
     }
     
     return platforms
-```
+\`\`\`
 
 ### Mobile Learning Strategy
 
 #### Mobile-First Design Principles
-```
+\`\`\`
 RESPONSIVE DESIGN:
 - Adapts to all screen sizes
 - Touch-friendly interfaces
@@ -3774,10 +3772,10 @@ GAMIFICATION ELEMENTS:
 - Leaderboards
 - Achievement unlocks
 - Social sharing
-```
+\`\`\`
 
 #### Mobile App Features
-```python
+\`\`\`python
 class SecurityAwarenessApp:
     def __init__(self):
         self.features = {
@@ -3832,14 +3830,14 @@ class SecurityAwarenessApp:
         }
         
         return self.deliver_notification(user_id, notification_templates[message_type])
-```
+\`\`\`
 
 ## Phishing Simulation Programs
 
 ### Simulation Strategy
 
 #### Campaign Planning
-```python
+\`\`\`python
 class PhishingSimulationProgram:
     def __init__(self):
         self.campaign_types = {
@@ -3925,10 +3923,10 @@ class PhishingSimulationProgram:
         }
         
         return landing_pages
-```
+\`\`\`
 
 #### Template Development
-```html
+\`\`\`html
 <!-- Example phishing template - Business Email Compromise -->
 <!DOCTYPE html>
 <html>
@@ -3978,12 +3976,12 @@ class PhishingSimulationProgram:
     <img src="{{tracking_pixel}}" width="1" height="1" style="display: none;">
 </body>
 </html>
-```
+\`\`\`
 
 ### Metrics and Analysis
 
 #### Key Performance Indicators
-```python
+\`\`\`python
 def calculate_phishing_metrics(campaign_data):
     """Calculate phishing simulation metrics"""
     
@@ -4042,14 +4040,14 @@ def generate_phishing_report(metrics, campaign_details):
     }
     
     return report
-```
+\`\`\`
 
 ## Measurement and Analytics
 
 ### Program Metrics Framework
 
 #### Leading Indicators
-```
+\`\`\`
 TRAINING PARTICIPATION:
 - Enrollment rates
 - Completion rates
@@ -4067,10 +4065,10 @@ BEHAVIOR CHANGE:
 - Incident reporting
 - Security tool usage
 - Best practice adoption
-```
+\`\`\`
 
 #### Lagging Indicators
-```
+\`\`\`
 SECURITY INCIDENTS:
 - Human error incidents
 - Successful phishing attacks
@@ -4088,12 +4086,12 @@ COMPLIANCE METRICS:
 - Regulatory assessments
 - Certification maintenance
 - Policy adherence
-```
+\`\`\`
 
 ### Analytics Dashboard
 
 #### Real-Time Monitoring
-```python
+\`\`\`python
 class SecurityAwarenessDashboard:
     def __init__(self):
         self.metrics = {
@@ -4172,10 +4170,10 @@ class SecurityAwarenessDashboard:
         }
         
         return trends
-```
+\`\`\`
 
 #### Predictive Analytics
-```python
+\`\`\`python
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 import numpy as np
@@ -4245,14 +4243,14 @@ class SecurityAwarenessPredictiveAnalytics:
                 })
         
         return sorted(high_risk_employees, key=lambda x: x['risk_score'], reverse=True)
-```
+\`\`\`
 
 ## Continuous Improvement
 
 ### Feedback Collection
 
 #### Multi-Source Feedback
-```python
+\`\`\`python
 class FeedbackCollectionSystem:
     def __init__(self):
         self.feedback_sources = [
@@ -4306,12 +4304,12 @@ class FeedbackCollectionSystem:
         }
         
         return analysis
-```
+\`\`\`
 
 ### Program Evolution
 
 #### Adaptive Learning Framework
-```python
+\`\`\`python
 class AdaptiveSecurityTraining:
     def __init__(self):
         self.learning_paths = {}
@@ -4357,12 +4355,12 @@ class AdaptiveSecurityTraining:
             'additional_content': additional_support,
             'next_module': self.recommend_next_module(employee_id, adjusted_difficulty)
         }
-```
+\`\`\`
 
 ### Industry Benchmarking
 
 #### Comparative Analysis
-```python
+\`\`\`python
 def benchmark_against_industry():
     """Benchmark program performance against industry standards"""
     
@@ -4408,14 +4406,14 @@ def benchmark_against_industry():
         }
     
     return benchmark_results
-```
+\`\`\`
 
 ## Budget and Resource Planning
 
 ### Cost-Benefit Analysis
 
 #### Program Investment Calculation
-```python
+\`\`\`python
 def calculate_program_costs():
     """Calculate total program investment"""
     
@@ -4503,12 +4501,12 @@ def calculate_program_benefits():
         'roi_percentage': roi,
         'payback_period': program_costs / total_annual_benefits
     }
-```
+\`\`\`
 
 ### Resource Allocation
 
 #### Staffing Model
-```
+\`\`\`
 PROGRAM STAFFING REQUIREMENTS
 
 Program Manager (1.0 FTE):
@@ -4540,7 +4538,7 @@ Technical Support (0.25 FTE):
 - Technical troubleshooting
 - Integration support
 - Data management
-```
+\`\`\`
 
 ## Conclusion
 
