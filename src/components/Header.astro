@@ -21,8 +21,11 @@ const currentPath = Astro.url.pathname;
     </ul>
 
     <div class="nav-search">
-      <input type="search" placeholder="Search articles..." class="search-input" id="searchInput">
-      <button class="search-btn" id="searchBtn">🔍</button>
+      <form class="search-form" id="headerSearchForm">
+        <input type="search" placeholder="Search articles..." class="search-input" id="headerSearchInput" autocomplete="off">
+        <button type="submit" class="search-btn" id="headerSearchBtn">🔍</button>
+      </form>
+      <div class="search-suggestions" id="searchSuggestions"></div>
     </div>
 
     <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
@@ -31,6 +34,16 @@ const currentPath = Astro.url.pathname;
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+    // Sample article data for search suggestions
+    const articles = [
+      { title: "Advanced Persistent Threats: What to Expect in 2025", slug: "advanced-persistent-threats-2025", category: "Threat Analysis", tags: ["APT", "Threat Intelligence", "Cybersecurity", "AI Security"] },
+      { title: "Zero Trust Implementation: A Practical Guide", slug: "zero-trust-implementation-guide", category: "Defense", tags: ["Zero Trust", "Implementation", "Enterprise Security", "IAM"] },
+      { title: "Kubernetes Security: Essential Checklist for 2025", slug: "kubernetes-security-checklist", category: "Tutorials", tags: ["Kubernetes", "Container Security", "DevSecOps", "Cloud Security"] },
+      { title: "Complete Guide: Installing Ubuntu in Oracle VirtualBox", slug: "ubuntu-virtualbox-installation-guide", category: "Tutorials", tags: ["Ubuntu", "VirtualBox", "Virtualization", "Security Lab", "Linux"] },
+      { title: "Emerging AI Security Frameworks: Protecting Machine Learning Systems", slug: "ai-security-frameworks-emerging", category: "Threat Analysis", tags: ["AI Security", "Machine Learning", "Adversarial Attacks", "Privacy"] },
+      { title: "Automating Incident Response: SOAR Implementation Guide", slug: "incident-response-automation", category: "Defense", tags: ["SOAR", "Automation", "Incident Response", "Security Operations"] }
+    ];
+
     // Mobile menu functionality
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const navMenu = document.getElementById('navMenu');
@@ -43,25 +56,74 @@ const currentPath = Astro.url.pathname;
     }
     
     // Search functionality
-    const searchBtn = document.getElementById('searchBtn');
-    const searchInput = document.getElementById('searchInput');
+    const headerSearchForm = document.getElementById('headerSearchForm');
+    const headerSearchInput = document.getElementById('headerSearchInput');
+    const searchSuggestions = document.getElementById('searchSuggestions');
     
-    function performSearch() {
-      const query = searchInput.value.trim();
-      if (query) {
-        // Redirect to blog page with search parameter
-        window.location.href = `/blog?search=${encodeURIComponent(query)}`;
+    function performSearch(query) {
+      if (query.trim()) {
+        window.location.href = `/blog?search=${encodeURIComponent(query.trim())}`;
       }
     }
     
-    if (searchBtn) {
-      searchBtn.addEventListener('click', performSearch);
+    function showSuggestions(query) {
+      if (!query || query.length < 2) {
+        searchSuggestions.style.display = 'none';
+        return;
+      }
+      
+      const filteredArticles = articles.filter(article => 
+        article.title.toLowerCase().includes(query.toLowerCase()) ||
+        article.category.toLowerCase().includes(query.toLowerCase()) ||
+        article.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+      ).slice(0, 5);
+      
+      if (filteredArticles.length === 0) {
+        searchSuggestions.style.display = 'none';
+        return;
+      }
+      
+      searchSuggestions.innerHTML = filteredArticles.map(article => `
+        <div class="suggestion-item" data-slug="${article.slug}">
+          <div class="suggestion-title">${article.title}</div>
+          <div class="suggestion-meta">
+            <span class="suggestion-category">${article.category}</span>
+            <span class="suggestion-tags">${article.tags.slice(0, 2).join(', ')}</span>
+          </div>
+        </div>
+      `).join('');
+      
+      searchSuggestions.style.display = 'block';
+      
+      // Add click handlers to suggestions
+      searchSuggestions.querySelectorAll('.suggestion-item').forEach(item => {
+        item.addEventListener('click', function() {
+          const slug = this.getAttribute('data-slug');
+          window.location.href = `/posts/${slug}`;
+        });
+      });
     }
     
-    if (searchInput) {
-      searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          performSearch();
+    if (headerSearchForm && headerSearchInput) {
+      headerSearchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        performSearch(headerSearchInput.value);
+      });
+      
+      headerSearchInput.addEventListener('input', function() {
+        showSuggestions(this.value);
+      });
+      
+      headerSearchInput.addEventListener('focus', function() {
+        if (this.value.length >= 2) {
+          showSuggestions(this.value);
+        }
+      });
+      
+      // Hide suggestions when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.nav-search')) {
+          searchSuggestions.style.display = 'none';
         }
       });
     }
@@ -137,12 +199,24 @@ const currentPath = Astro.url.pathname;
   }
 
   .nav-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-form {
     display: flex;
     align-items: center;
     background: rgba(30, 41, 59, 0.8);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 0.5rem;
     overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  .search-form:focus-within {
+    border-color: #10B981;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
   }
 
   .search-input {
@@ -152,6 +226,7 @@ const currentPath = Astro.url.pathname;
     padding: 0.5rem 1rem;
     outline: none;
     width: 200px;
+    font-size: 0.9rem;
   }
 
   .search-input::placeholder {
@@ -165,11 +240,69 @@ const currentPath = Astro.url.pathname;
     padding: 0.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .search-btn:hover {
     color: #10B981;
     background: rgba(16, 185, 129, 0.1);
+  }
+
+  .search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  .suggestion-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  }
+
+  .suggestion-item:last-child {
+    border-bottom: none;
+  }
+
+  .suggestion-item:hover {
+    background: rgba(16, 185, 129, 0.1);
+  }
+
+  .suggestion-title {
+    color: #E2E8F0;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+  }
+
+  .suggestion-meta {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .suggestion-category {
+    color: #10B981;
+    font-weight: 500;
+  }
+
+  .suggestion-tags {
+    color: #64748B;
   }
 
   .mobile-menu-btn {
