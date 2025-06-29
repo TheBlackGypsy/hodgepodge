@@ -3938,23 +3938,23 @@ class PhishingSimulationProgram:
         <div style="background: #f8f9fa; padding: 20px; border-left: 4px solid #007bff;">
             <h2 style="color: #007bff; margin-top: 0;">Payment Request - Action Required</h2>
             
-            <p>Dear {{first_name}},</p>
+            <p>Dear [FIRST_NAME],</p>
             
             <p>We have an urgent invoice that requires immediate payment to avoid service disruption. 
             Our accounting system shows this payment is overdue.</p>
             
             <div style="background: #fff3cd; padding: 15px; border: 1px solid #ffeaa7; margin: 20px 0;">
                 <strong>Invoice Details:</strong><br>
-                Invoice #: INV-{{random_number}}<br>
-                Amount: ${{random_amount}}<br>
-                Due Date: {{yesterday_date}}<br>
+                Invoice #: INV-[RANDOM_NUMBER]<br>
+                Amount: $[RANDOM_AMOUNT]<br>
+                Due Date: [YESTERDAY_DATE]<br>
                 Status: <span style="color: #dc3545;">OVERDUE</span>
             </div>
             
             <p>Please click the link below to process payment immediately:</p>
             
             <div style="text-align: center; margin: 30px 0;">
-                <a href="{{tracking_link}}" 
+                <a href="[TRACKING_LINK]" 
                    style="background: #dc3545; color: white; padding: 12px 30px; 
                           text-decoration: none; border-radius: 5px; display: inline-block;">
                     PAY NOW - URGENT
@@ -3963,7 +3963,7 @@ class PhishingSimulationProgram:
             
             <p style="font-size: 12px; color: #666;">
                 If you have questions, please contact our billing department at 
-                billing@{{spoofed_domain}}.com
+                billing@[SPOOFED_DOMAIN].com
             </p>
             
             <p style="font-size: 12px; color: #666;">
@@ -3973,7 +3973,7 @@ class PhishingSimulationProgram:
     </div>
     
     <!-- Tracking pixel -->
-    <img src="{{tracking_pixel}}" width="1" height="1" style="display: none;">
+    <img src="[TRACKING_PIXEL]" width="1" height="1" style="display: none;">
 </body>
 </html>
 \`\`\`
