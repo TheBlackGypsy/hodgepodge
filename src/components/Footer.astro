@@ -14,10 +14,10 @@
           and defense strategies in the ever-evolving digital landscape.
         </p>
         <div class="social-links">
-          <a href="#" aria-label="Twitter">🐦</a>
-          <a href="#" aria-label="LinkedIn">💼</a>
-          <a href="#" aria-label="GitHub">🐙</a>
-          <a href="#" aria-label="RSS">📡</a>
+          <a href="https://x.com/MarcellusKnicel" target="_blank" rel="noopener noreferrer" aria-label="Twitter">🐦</a>
+          <a href="https://www.linkedin.com/in/quintinmcfadden/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">💼</a>
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">🐙</a>
+          <a href="/blog" aria-label="RSS">📡</a>
         </div>
       </div>
 
@@ -35,7 +35,7 @@
         <h4>Resources</h4>
         <ul class="footer-links">
           <li><a href="/about">About Us</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li><a href="mailto:quintinmcfadden@gmail.com">Contact</a></li>
           <li><a href="/privacy">Privacy Policy</a></li>
           <li><a href="/terms">Terms of Service</a></li>
         </ul>
@@ -270,11 +270,24 @@ CyberSec Insights Website`);
     border-radius: 0.5rem;
     transition: all 0.2s ease;
     font-size: 1.2rem;
+    text-decoration: none;
   }
 
   .social-links a:hover {
     background: rgba(16, 185, 129, 0.2);
     transform: translateY(-2px);
+  }
+
+  .social-links a[aria-label="Twitter"]:hover {
+    background: rgba(29, 161, 242, 0.2);
+  }
+
+  .social-links a[aria-label="LinkedIn"]:hover {
+    background: rgba(0, 119, 181, 0.2);
+  }
+
+  .social-links a[aria-label="GitHub"]:hover {
+    background: rgba(88, 166, 255, 0.2);
   }
 
   .footer-links {
@@ -288,6 +301,7 @@ CyberSec Insights Website`);
   .footer-links a {
     color: #94A3B8;
     transition: color 0.2s ease;
+    text-decoration: none;
   }
 
   .footer-links a:hover {
