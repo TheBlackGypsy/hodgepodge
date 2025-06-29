@@ -88,7 +88,7 @@ Before starting, ensure you have:
    - Install VMware Tools for better performance
 
 3. **Initial Server Configuration**
-   ```powershell
+   ``\`powershell
    # Set static IP address
    New-NetIPAddress -InterfaceAlias "Ethernet0" -IPAddress 192.168.10.10 -PrefixLength 24 -DefaultGateway 192.168.10.1
    Set-DnsClientServerAddress -InterfaceAlias "Ethernet0" -ServerAddresses 192.168.10.10
@@ -100,7 +100,7 @@ Before starting, ensure you have:
 ### Install Active Directory Domain Services
 
 1. **Add ADDS Role**
-   ```powershell
+   ``\`powershell
    # Install AD DS role
    Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
    
@@ -109,7 +109,7 @@ Before starting, ensure you have:
    ```
 
 2. **Promote to Domain Controller**
-   ```powershell
+   ``\`powershell
    # Create new forest and domain
    Install-ADDSForest `
      -DomainName "lab.local" `
@@ -118,6 +118,8 @@ Before starting, ensure you have:
      -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd123!" -AsPlainText -Force) `
      -Force
    ```
+  }
+]
 
 3. **Post-Installation Configuration**
    - Server will restart automatically
@@ -227,8 +229,8 @@ Add-ADGroupMember -Identity "Finance Team" -Members "bjohnson"
 
 2. **Domain Join Process**
    - Open System Properties
-   - Click "Change" next to computer name
-   - Select "Domain" and enter "lab.local"
+   - Click "Change\" next to computer name
+   - Select "Domain\" and enter "lab.local"
    - Use domain administrator credentials
    - Restart when prompted
 
@@ -309,7 +311,7 @@ New-NetFirewallRule -DisplayName "Allow Kerberos" -Direction Inbound -Protocol T
 
 2. **Configure Password Policy**
    - Open Group Policy Management
-   - Edit "Password Policy" GPO
+   - Edit "Password Policy\" GPO
    - Navigate to Computer Configuration > Policies > Windows Settings > Security Settings > Account Policies
    - Set minimum password length: 12 characters
    - Set password complexity: Enabled
@@ -900,7 +902,7 @@ sudo runuser -u _gvm -- greenbone-feed-sync --type CERT
 
 2. **Create Scan Configuration**
    - Go to Configuration → Scan Configs
-   - Clone "Full and fast" configuration
+   - Clone "Full and fast\" configuration
    - Customize as needed
    - Save configuration
 
@@ -1533,7 +1535,7 @@ Effective vulnerability scanning requires:
    - Tool optimization
    - Staff training
 
-By following this comprehensive guide, you'll be able to implement an effective vulnerability scanning program that significantly improves your organization's security posture. Remember that vulnerability scanning is just one component of a comprehensive security program – it must be combined with other security controls, processes, and practices to provide effective protection.
+By following this comprehensive guide, you'll be able to implement an effective vulnerability scanning program that significantly improves your organization\'s security posture. Remember that vulnerability scanning is just one component of a comprehensive security program – it must be combined with other security controls, processes, and practices to provide effective protection.
 
 The key to success is consistency, thoroughness, and continuous improvement. Start with basic scans and gradually implement more advanced techniques as your skills and program mature.
     `,
