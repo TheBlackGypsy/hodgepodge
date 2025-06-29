@@ -8,12 +8,22 @@ import { blogPosts, getFeaturedPosts } from '../data/blogPosts.ts';
 const featuredPosts = getFeaturedPosts();
 const allPosts = blogPosts.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
 
+// Handle search query
+const searchQuery = Astro.url.searchParams.get('search') || '';
+const filteredPosts = searchQuery 
+  ? allPosts.filter(post => 
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+    )
+  : allPosts;
+
 // Group posts by category
 const postsByCategory = {
-  'Threat Analysis': allPosts.filter(post => post.category === 'Threat Analysis'),
-  'Defense': allPosts.filter(post => post.category === 'Defense'),
-  'Tutorials': allPosts.filter(post => post.category === 'Tutorials'),
-  'Industry News': allPosts.filter(post => post.category === 'Industry News')
+  'Threat Analysis': filteredPosts.filter(post => post.category === 'Threat Analysis'),
+  'Defense': filteredPosts.filter(post => post.category === 'Defense'),
+  'Tutorials': filteredPosts.filter(post => post.category === 'Tutorials'),
+  'Industry News': filteredPosts.filter(post => post.category === 'Industry News')
 };
 
 // Get unique categories
@@ -40,6 +50,15 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
           Expert insights, practical tutorials, and the latest cybersecurity intelligence
         </p>
         
+        <!-- Search Results -->
+        {searchQuery && (
+          <div class="search-results">
+            <p>Search results for: <strong>"{searchQuery}"</strong></p>
+            <p>{filteredPosts.length} article(s) found</p>
+            <button class="clear-search-btn" id="clearSearchBtn">Clear Search</button>
+          </div>
+        )}
+        
         <!-- Blog Stats -->
         <div class="blog-stats">
           <div class="stat-item">
@@ -61,15 +80,17 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         </div>
       </div>
 
-      <!-- Featured Articles -->
-      <section class="featured-section">
-        <h2 class="section-title">🌟 Featured Articles</h2>
-        <div class="featured-grid">
-          {featuredPosts.map(post => (
-            <BlogCard {...post} />
-          ))}
-        </div>
-      </section>
+      <!-- Featured Articles (only show if no search) -->
+      {!searchQuery && (
+        <section class="featured-section">
+          <h2 class="section-title">🌟 Featured Articles</h2>
+          <div class="featured-grid">
+            {featuredPosts.map(post => (
+              <BlogCard {...post} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <!-- Category Filter -->
       <section class="filter-section">
@@ -95,7 +116,7 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         <div class="articles-container">
           <!-- All Posts -->
           <div class="articles-grid" data-category="All">
-            {allPosts.map(post => (
+            {filteredPosts.map(post => (
               <BlogCard {...post} />
             ))}
           </div>
@@ -204,7 +225,9 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
   document.addEventListener('DOMContentLoaded', function() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const articleGrids = document.querySelectorAll('.articles-grid');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
     
+    // Category filtering
     filterButtons.forEach(button => {
       button.addEventListener('click', function() {
         const category = this.getAttribute('data-category');
@@ -226,6 +249,13 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         });
       });
     });
+    
+    // Clear search functionality
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener('click', function() {
+        window.location.href = '/blog';
+      });
+    }
     
     // Enhanced Newsletter form handling
     const blogForm = document.getElementById('blogNewsletterForm');
@@ -389,6 +419,40 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     margin: 0 auto 2rem;
   }
 
+  .search-results {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .search-results p {
+    color: #E2E8F0;
+    margin: 0;
+  }
+
+  .clear-search-btn {
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #60A5FA;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+  }
+
+  .clear-search-btn:hover {
+    background: rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+  }
+
   .blog-stats {
     display: flex;
     justify-content: center;
@@ -461,12 +525,15 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     background: rgba(59, 130, 246, 0.2);
     border-color: rgba(59, 130, 246, 0.3);
     color: #60A5FA;
+    transform: translateY(-1px);
   }
 
   .filter-btn.active {
     background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
     border-color: #3B82F6;
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
   }
 
   /* Articles Section */
@@ -575,6 +642,11 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     position: relative;
     min-width: 140px;
     transition: all 0.2s ease;
+  }
+
+  .subscribe-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
   }
 
   .subscribe-btn:disabled {
@@ -773,6 +845,11 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     .blog-stats {
       flex-direction: column;
       gap: 1.5rem;
+    }
+
+    .search-results {
+      flex-direction: column;
+      text-align: center;
     }
 
     .featured-grid,

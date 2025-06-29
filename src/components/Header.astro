@@ -11,7 +11,7 @@ const currentPath = Astro.url.pathname;
       </a>
     </div>
     
-    <ul class="nav-menu">
+    <ul class="nav-menu" id="navMenu">
       <li><a href="/" class={currentPath === '/' ? 'active' : ''}>Home</a></li>
       <li><a href="/blog" class={currentPath === '/blog' ? 'active' : ''}>Blog</a></li>
       <li><a href="/threats" class={currentPath === '/threats' ? 'active' : ''}>Threats</a></li>
@@ -21,13 +21,52 @@ const currentPath = Astro.url.pathname;
     </ul>
 
     <div class="nav-search">
-      <input type="search" placeholder="Search articles..." class="search-input">
-      <button class="search-btn">🔍</button>
+      <input type="search" placeholder="Search articles..." class="search-input" id="searchInput">
+      <button class="search-btn" id="searchBtn">🔍</button>
     </div>
 
-    <button class="mobile-menu-btn">☰</button>
+    <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
   </nav>
 </header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Mobile menu functionality
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navMenu = document.getElementById('navMenu');
+    
+    if (mobileMenuBtn && navMenu) {
+      mobileMenuBtn.addEventListener('click', function() {
+        navMenu.classList.toggle('mobile-active');
+        this.textContent = navMenu.classList.contains('mobile-active') ? '✕' : '☰';
+      });
+    }
+    
+    // Search functionality
+    const searchBtn = document.getElementById('searchBtn');
+    const searchInput = document.getElementById('searchInput');
+    
+    function performSearch() {
+      const query = searchInput.value.trim();
+      if (query) {
+        // Redirect to blog page with search parameter
+        window.location.href = `/blog?search=${encodeURIComponent(query)}`;
+      }
+    }
+    
+    if (searchBtn) {
+      searchBtn.addEventListener('click', performSearch);
+    }
+    
+    if (searchInput) {
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          performSearch();
+        }
+      });
+    }
+  });
+</script>
 
 <style>
   .header {
@@ -78,6 +117,7 @@ const currentPath = Astro.url.pathname;
     gap: 2rem;
     margin: 0;
     padding: 0;
+    transition: all 0.3s ease;
   }
 
   .nav-menu a {
@@ -124,11 +164,12 @@ const currentPath = Astro.url.pathname;
     color: #64748B;
     padding: 0.5rem;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
   }
 
   .search-btn:hover {
     color: #10B981;
+    background: rgba(16, 185, 129, 0.1);
   }
 
   .mobile-menu-btn {
@@ -138,16 +179,53 @@ const currentPath = Astro.url.pathname;
     color: #E2E8F0;
     font-size: 1.5rem;
     cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-menu-btn:hover {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10B981;
   }
 
   @media (max-width: 768px) {
-    .nav-menu,
     .nav-search {
       display: none;
     }
 
     .mobile-menu-btn {
       display: block;
+    }
+
+    .nav-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      padding: 1rem;
+      gap: 0.5rem;
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .nav-menu.mobile-active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-menu a {
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      width: 100%;
+      text-align: center;
     }
 
     .nav {

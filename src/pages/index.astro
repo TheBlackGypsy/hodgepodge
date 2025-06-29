@@ -35,7 +35,7 @@ const latestPosts = getLatestPosts(4);
           ))}
         </div>
         <div class="section-actions">
-          <a href="/blog" class="btn">View All Articles</a>
+          <a href="/blog" class="btn view-all-btn">View All Articles</a>
         </div>
       </section>
 
@@ -43,26 +43,71 @@ const latestPosts = getLatestPosts(4);
       <section class="categories-section">
         <h2 class="section-title">Explore Categories</h2>
         <div class="categories-grid">
-          <a href="/threats" class="category-card">
+          <a href="/threats" class="category-card threat-card">
             <div class="category-icon">🚨</div>
             <h3>Threat Analysis</h3>
             <p>Latest threat intelligence and attack vectors</p>
+            <div class="category-arrow">→</div>
           </a>
-          <a href="/defense" class="category-card">
+          <a href="/defense" class="category-card defense-card">
             <div class="category-icon">🛡️</div>
             <h3>Defense Strategies</h3>
             <p>Proven security frameworks and best practices</p>
+            <div class="category-arrow">→</div>
           </a>
-          <a href="/tutorials" class="category-card">
+          <a href="/tutorials" class="category-card tutorial-card">
             <div class="category-icon">🎓</div>
             <h3>Security Tutorials</h3>
             <p>Step-by-step guides and practical implementations</p>
+            <div class="category-arrow">→</div>
           </a>
-          <a href="/news" class="category-card">
+          <a href="/blog" class="category-card news-card">
             <div class="category-icon">📰</div>
-            <h3>Industry News</h3>
-            <p>Breaking news and cybersecurity developments</p>
+            <h3>All Articles</h3>
+            <p>Browse our complete collection of cybersecurity content</p>
+            <div class="category-arrow">→</div>
           </a>
+        </div>
+      </section>
+
+      <!-- Quick Actions -->
+      <section class="quick-actions-section">
+        <h2 class="section-title">Quick Actions</h2>
+        <div class="quick-actions-grid">
+          <div class="action-card">
+            <div class="action-icon">🔍</div>
+            <h3>Search Articles</h3>
+            <p>Find specific cybersecurity topics</p>
+            <form class="quick-search-form" id="quickSearchForm">
+              <input type="search" placeholder="Search for articles..." id="quickSearchInput">
+              <button type="submit" class="search-action-btn">Search</button>
+            </form>
+          </div>
+          
+          <div class="action-card">
+            <div class="action-icon">📧</div>
+            <h3>Newsletter Signup</h3>
+            <p>Get weekly cybersecurity updates</p>
+            <form class="quick-newsletter-form" id="quickNewsletterForm">
+              <input type="email" placeholder="Enter your email" id="quickEmailInput" required>
+              <button type="submit" class="newsletter-action-btn">Subscribe</button>
+            </form>
+            <div class="quick-message" id="quickMessage"></div>
+          </div>
+          
+          <div class="action-card">
+            <div class="action-icon">🎯</div>
+            <h3>Latest Threats</h3>
+            <p>View current threat landscape</p>
+            <a href="/threats" class="action-btn">View Threats</a>
+          </div>
+          
+          <div class="action-card">
+            <div class="action-icon">🛡️</div>
+            <h3>Defense Guide</h3>
+            <p>Learn protection strategies</p>
+            <a href="/defense" class="action-btn">Learn Defense</a>
+          </div>
         </div>
       </section>
     </div>
@@ -70,6 +115,75 @@ const latestPosts = getLatestPosts(4);
 
   <Footer />
 </Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Quick search functionality
+    const quickSearchForm = document.getElementById('quickSearchForm');
+    const quickSearchInput = document.getElementById('quickSearchInput');
+    
+    if (quickSearchForm && quickSearchInput) {
+      quickSearchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const query = quickSearchInput.value.trim();
+        if (query) {
+          window.location.href = `/blog?search=${encodeURIComponent(query)}`;
+        }
+      });
+    }
+    
+    // Quick newsletter functionality
+    const quickNewsletterForm = document.getElementById('quickNewsletterForm');
+    const quickEmailInput = document.getElementById('quickEmailInput');
+    const quickMessage = document.getElementById('quickMessage');
+    
+    if (quickNewsletterForm && quickEmailInput) {
+      quickNewsletterForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = quickEmailInput.value.trim();
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        
+        if (!emailRegex.test(email)) {
+          showQuickMessage('Please enter a valid email address', 'error');
+          return;
+        }
+        
+        // Show loading state
+        const submitBtn = quickNewsletterForm.querySelector('.newsletter-action-btn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Subscribing...';
+        submitBtn.disabled = true;
+        
+        try {
+          // Simulate API call
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          
+          // Show success message
+          showQuickMessage('Successfully subscribed! Check your email.', 'success');
+          quickNewsletterForm.reset();
+          
+        } catch (error) {
+          showQuickMessage('Something went wrong. Please try again.', 'error');
+        } finally {
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        }
+      });
+    }
+    
+    function showQuickMessage(message, type) {
+      if (quickMessage) {
+        quickMessage.textContent = message;
+        quickMessage.className = `quick-message ${type}`;
+        quickMessage.style.display = 'block';
+        setTimeout(() => {
+          quickMessage.style.display = 'none';
+        }, 5000);
+      }
+    }
+  });
+</script>
 
 <style>
   .main-content {
@@ -112,8 +226,17 @@ const latestPosts = getLatestPosts(4);
     text-align: center;
   }
 
+  .view-all-btn {
+    transition: all 0.3s ease;
+  }
+
+  .view-all-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+  }
+
   .categories-section {
-    margin-bottom: 3rem;
+    margin-bottom: 5rem;
   }
 
   .categories-grid {
@@ -131,29 +254,222 @@ const latestPosts = getLatestPosts(4);
     text-decoration: none;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .category-card:hover::before {
+    left: 100%;
   }
 
   .category-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-8px);
     border-color: rgba(16, 185, 129, 0.3);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .threat-card:hover {
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .defense-card:hover {
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .tutorial-card:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .news-card:hover {
+    border-color: rgba(245, 158, 11, 0.3);
   }
 
   .category-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
     filter: drop-shadow(0 0 10px #10B981);
+    transition: transform 0.3s ease;
+  }
+
+  .category-card:hover .category-icon {
+    transform: scale(1.1) rotate(5deg);
   }
 
   .category-card h3 {
     color: #E2E8F0;
     margin-bottom: 0.75rem;
     font-size: 1.25rem;
+    transition: color 0.3s ease;
+  }
+
+  .category-card:hover h3 {
+    color: #10B981;
   }
 
   .category-card p {
     color: #94A3B8;
     line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .category-arrow {
+    color: #10B981;
+    font-size: 1.5rem;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .category-card:hover .category-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Quick Actions Section */
+  .quick-actions-section {
+    margin-bottom: 3rem;
+  }
+
+  .quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+
+  .action-card {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+  }
+
+  .action-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .action-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px #3B82F6);
+  }
+
+  .action-card h3 {
+    color: #E2E8F0;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .action-card p {
+    color: #94A3B8;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .quick-search-form,
+  .quick-newsletter-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .quick-search-form input,
+  .quick-newsletter-form input {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    color: #E2E8F0;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .quick-search-form input:focus,
+  .quick-newsletter-form input:focus {
+    border-color: #3B82F6;
+  }
+
+  .quick-search-form input::placeholder,
+  .quick-newsletter-form input::placeholder {
+    color: #64748B;
+  }
+
+  .search-action-btn,
+  .newsletter-action-btn {
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .search-action-btn:hover,
+  .newsletter-action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  }
+
+  .search-action-btn:disabled,
+  .newsletter-action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .action-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    color: white;
+  }
+
+  .quick-message {
+    display: none;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  .quick-message.success {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #10B981;
+  }
+
+  .quick-message.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #EF4444;
   }
 
   @media (max-width: 768px) {
@@ -172,6 +488,20 @@ const latestPosts = getLatestPosts(4);
 
     .category-card {
       padding: 1.5rem;
+    }
+
+    .quick-actions-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .quick-search-form,
+    .quick-newsletter-form {
+      flex-direction: column;
+    }
+
+    .search-action-btn,
+    .newsletter-action-btn {
+      width: 100%;
     }
   }
 </style>

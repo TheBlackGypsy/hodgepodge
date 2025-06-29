@@ -16,8 +16,8 @@
         and professional defense strategies from industry leaders.
       </p>
       <div class="hero-actions">
-        <a href="#latest-posts" class="btn">Latest Articles</a>
-        <a href="/about" class="btn btn-secondary">About Us</a>
+        <a href="#latest-posts" class="btn latest-btn">Latest Articles</a>
+        <a href="/about" class="btn btn-secondary about-btn">About Us</a>
       </div>
       <div class="hero-stats">
         <div class="stat">
@@ -36,6 +36,77 @@
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll for latest articles button
+    const latestBtn = document.querySelector('.latest-btn');
+    if (latestBtn) {
+      latestBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector('#latest-posts');
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    }
+    
+    // Add click animation to buttons
+    const heroButtons = document.querySelectorAll('.hero-actions .btn');
+    heroButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          this.style.transform = '';
+        }, 150);
+      });
+    });
+    
+    // Animate stats on scroll
+    const stats = document.querySelectorAll('.stat-number');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = entry.target;
+          const finalValue = target.textContent;
+          animateNumber(target, finalValue);
+          observer.unobserve(target);
+        }
+      });
+    });
+    
+    stats.forEach(stat => observer.observe(stat));
+    
+    function animateNumber(element, finalValue) {
+      const isNumber = /^\d+$/.test(finalValue);
+      if (!isNumber) return;
+      
+      const duration = 2000;
+      const start = 0;
+      const end = parseInt(finalValue);
+      const startTime = performance.now();
+      
+      function updateNumber(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = Math.floor(start + (end - start) * progress);
+        
+        element.textContent = current + (finalValue.includes('K') ? 'K+' : finalValue.includes('h') ? 'h' : '+');
+        
+        if (progress < 1) {
+          requestAnimationFrame(updateNumber);
+        } else {
+          element.textContent = finalValue;
+        }
+      }
+      
+      requestAnimationFrame(updateNumber);
+    }
+  });
+</script>
 
 <style>
   .hero {
@@ -81,6 +152,7 @@
     font-weight: 700;
     margin-bottom: 1.5rem;
     line-height: 1.1;
+    animation: fadeInUp 1s ease-out;
   }
 
   .highlight {
@@ -96,6 +168,7 @@
     color: #94A3B8;
     margin-bottom: 2.5rem;
     line-height: 1.6;
+    animation: fadeInUp 1s ease-out 0.2s both;
   }
 
   .hero-actions {
@@ -103,6 +176,37 @@
     gap: 1rem;
     justify-content: center;
     margin-bottom: 3rem;
+    animation: fadeInUp 1s ease-out 0.4s both;
+  }
+
+  .hero-actions .btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-actions .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .hero-actions .btn:hover::before {
+    left: 100%;
+  }
+
+  .hero-actions .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+  }
+
+  .btn-secondary:hover {
+    box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
   }
 
   .hero-stats {
@@ -110,10 +214,16 @@
     justify-content: center;
     gap: 3rem;
     margin-top: 2rem;
+    animation: fadeInUp 1s ease-out 0.6s both;
   }
 
   .stat {
     text-align: center;
+    transition: transform 0.3s ease;
+  }
+
+  .stat:hover {
+    transform: translateY(-5px);
   }
 
   .stat-number {
@@ -121,6 +231,11 @@
     font-weight: 700;
     color: #10B981;
     margin-bottom: 0.25rem;
+    transition: color 0.3s ease;
+  }
+
+  .stat:hover .stat-number {
+    color: #3B82F6;
   }
 
   .stat-label {
@@ -128,6 +243,17 @@
     color: #64748B;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @media (max-width: 768px) {
@@ -147,6 +273,11 @@
     .hero-actions {
       flex-direction: column;
       align-items: center;
+    }
+
+    .hero-actions .btn {
+      width: 100%;
+      max-width: 250px;
     }
 
     .hero-stats {
