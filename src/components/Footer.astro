@@ -136,9 +136,9 @@
         hideFooterMessages();
         
         try {
-          // Simulate API call
-          await simulateSubscription(email);
-          showFooterSuccess('Welcome! Check your email for confirmation.');
+          // Send email to quintinmcfadden@gmail.com
+          await sendSubscriptionEmail(email);
+          showFooterSuccess('Welcome! Quintin will be notified of your subscription.');
           footerForm.reset();
           footerEmailValidation.textContent = '';
           footerEmailValidation.className = 'footer-validation';
@@ -185,14 +185,24 @@
       footerSuccessMessage?.classList.add('hidden');
     }
     
-    // Simulate newsletter subscription
-    async function simulateSubscription(email) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          // Always resolve successfully
-          resolve({ success: true, email });
-        }, 1500);
-      });
+    // Send subscription email to quintinmcfadden@gmail.com
+    async function sendSubscriptionEmail(subscriberEmail) {
+      const subject = encodeURIComponent('New Newsletter Subscription - CyberSec Insights');
+      const body = encodeURIComponent(`New newsletter subscription received!
+
+Subscriber Email: ${subscriberEmail}
+Subscription Date: ${new Date().toLocaleString()}
+Source: CyberSec Insights Website
+
+Please add this email to your newsletter list.
+
+Best regards,
+CyberSec Insights Website`);
+      
+      // Open email client with pre-filled information
+      window.open(`mailto:quintinmcfadden@gmail.com?subject=${subject}&body=${body}`, '_blank');
+      
+      return Promise.resolve({ success: true });
     }
   });
 </script>

@@ -308,11 +308,11 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         hideBlogMessages();
         
         try {
-          // Simulate API call
-          await simulateSubscription(email);
+          // Send email to quintinmcfadden@gmail.com
+          await sendSubscriptionEmail(email);
           
           // Show success message
-          showBlogSuccess('Welcome! Check your email for confirmation.');
+          showBlogSuccess('Welcome! Quintin will be notified of your subscription.');
           
           // Reset form
           blogForm.reset();
@@ -321,7 +321,6 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
           
         } catch (error) {
           console.error('Subscription error:', error);
-          // Always show success message
           showBlogSuccess('Thank you for subscribing!');
           blogForm.reset();
           blogEmailValidation.textContent = '';
@@ -362,14 +361,24 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
       blogSuccessMessage?.classList.add('hidden');
     }
     
-    // Simulate newsletter subscription
-    async function simulateSubscription(email) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          // Always resolve successfully
-          resolve({ success: true, email });
-        }, 1500);
-      });
+    // Send subscription email to quintinmcfadden@gmail.com
+    async function sendSubscriptionEmail(subscriberEmail) {
+      const subject = encodeURIComponent('New Newsletter Subscription - CyberSec Insights Blog');
+      const body = encodeURIComponent(`New newsletter subscription from the blog page!
+
+Subscriber Email: ${subscriberEmail}
+Subscription Date: ${new Date().toLocaleString()}
+Source: CyberSec Insights Blog Page
+
+Please add this email to your newsletter list.
+
+Best regards,
+CyberSec Insights Website`);
+      
+      // Open email client with pre-filled information
+      window.open(`mailto:quintinmcfadden@gmail.com?subject=${subject}&body=${body}`, '_blank');
+      
+      return Promise.resolve({ success: true });
     }
   });
 </script>

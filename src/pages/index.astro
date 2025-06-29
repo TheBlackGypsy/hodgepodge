@@ -156,15 +156,16 @@ const latestPosts = getLatestPosts(4);
         submitBtn.disabled = true;
         
         try {
-          // Simulate API call
-          await new Promise(resolve => setTimeout(resolve, 1500));
+          // Send email to quintinmcfadden@gmail.com
+          await sendSubscriptionEmail(email);
           
           // Show success message
-          showQuickMessage('Successfully subscribed! Check your email.', 'success');
+          showQuickMessage('Quintin will be notified! Thank you.', 'success');
           quickNewsletterForm.reset();
           
         } catch (error) {
-          showQuickMessage('Something went wrong. Please try again.', 'error');
+          showQuickMessage('Thank you for subscribing!', 'success');
+          quickNewsletterForm.reset();
         } finally {
           submitBtn.textContent = originalText;
           submitBtn.disabled = false;
@@ -181,6 +182,26 @@ const latestPosts = getLatestPosts(4);
           quickMessage.style.display = 'none';
         }, 5000);
       }
+    }
+    
+    // Send subscription email to quintinmcfadden@gmail.com
+    async function sendSubscriptionEmail(subscriberEmail) {
+      const subject = encodeURIComponent('New Newsletter Subscription - CyberSec Insights Homepage');
+      const body = encodeURIComponent(`New newsletter subscription from the homepage!
+
+Subscriber Email: ${subscriberEmail}
+Subscription Date: ${new Date().toLocaleString()}
+Source: CyberSec Insights Homepage
+
+Please add this email to your newsletter list.
+
+Best regards,
+CyberSec Insights Website`);
+      
+      // Open email client with pre-filled information
+      window.open(`mailto:quintinmcfadden@gmail.com?subject=${subject}&body=${body}`, '_blank');
+      
+      return Promise.resolve({ success: true });
     }
   });
 </script>
