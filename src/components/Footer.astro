@@ -11,7 +11,7 @@
         </div>
         <p class="footer-description">
           Your trusted source for cybersecurity insights, threat intelligence, 
-          and defense strategies in the ever-evolving digital landscape.
+          and defense strategies in the ever-evolving digital landscape
         </p>
         <div class="social-links">
           <a href="https://x.com/MarcellusKnicel" target="_blank" rel="noopener noreferrer" aria-label="Twitter">🐦</a>
@@ -64,25 +64,23 @@
           </button>
         </form>
         
-        <!-- Footer Messages -->
         <div class="footer-message-container">
           <div class="footer-success-message hidden" id="footerSuccessMessage">
             <span class="message-icon">✅</span>
-            <span class="message-text">Subscribed successfully!</span>
+            <span class="message-text">Subscribed successfully</span>
           </div>
         </div>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; 2025 CyberSec Insights. All rights reserved.</p>
-      <p>Securing the digital world, one article at a time.</p>
+      <p>&copy; 2025 CyberSec Insights. All rights reserved</p>
+      <p>Securing the digital world, one article at a time</p>
     </div>
   </div>
 </footer>
 
 <script>
-  // Footer newsletter functionality
   document.addEventListener('DOMContentLoaded', function() {
     const footerForm = document.getElementById('footerNewsletterForm');
     const footerEmailInput = document.getElementById('footerEmailInput');
@@ -92,13 +90,11 @@
     const footerSuccessMessage = document.getElementById('footerSuccessMessage');
     const footerEmailValidation = document.getElementById('footerEmailValidation');
     
-    // Email validation function
     function validateEmail(email) {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       return emailRegex.test(email);
     }
     
-    // Real-time email validation for footer
     if (footerEmailInput) {
       footerEmailInput.addEventListener('input', function() {
         const email = this.value.trim();
@@ -119,7 +115,6 @@
       });
     }
     
-    // Footer form submission
     if (footerForm) {
       footerForm.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -131,21 +126,18 @@
           return;
         }
         
-        // Show loading state
         setFooterLoadingState(true);
         hideFooterMessages();
         
         try {
-          // Send email to quintinmcfadden@gmail.com
           await sendSubscriptionEmail(email);
-          showFooterSuccess('Welcome! Quintin will be notified of your subscription.');
+          showFooterSuccess('Welcome! Quintin will be notified of your subscription');
           footerForm.reset();
           footerEmailValidation.textContent = '';
           footerEmailValidation.className = 'footer-validation';
         } catch (error) {
           console.error('Subscription error:', error);
-          // Just show success message instead of error
-          showFooterSuccess('Thank you for subscribing!');
+          showFooterSuccess('Thank you for subscribing');
           footerForm.reset();
           footerEmailValidation.textContent = '';
           footerEmailValidation.className = 'footer-validation';
@@ -155,7 +147,6 @@
       });
     }
     
-    // Footer helper functions
     function setFooterLoadingState(loading) {
       if (!footerSubscribeBtn) return;
       
@@ -185,21 +176,19 @@
       footerSuccessMessage?.classList.add('hidden');
     }
     
-    // Send subscription email to quintinmcfadden@gmail.com
     async function sendSubscriptionEmail(subscriberEmail) {
       const subject = encodeURIComponent('New Newsletter Subscription - CyberSec Insights');
-      const body = encodeURIComponent(`New newsletter subscription received!
+      const body = encodeURIComponent(`New newsletter subscription received
 
 Subscriber Email: ${subscriberEmail}
 Subscription Date: ${new Date().toLocaleString()}
 Source: CyberSec Insights Website
 
-Please add this email to your newsletter list.
+Please add this email to your newsletter list
 
 Best regards,
 CyberSec Insights Website`);
       
-      // Open email client with pre-filled information
       window.open(`mailto:quintinmcfadden@gmail.com?subject=${subject}&body=${body}`, '_blank');
       
       return Promise.resolve({ success: true });
@@ -453,7 +442,7 @@ CyberSec Insights Website`);
     }
 
     .newsletter-form input {
-      font-size: 16px; /* Prevents zoom on iOS */
+      font-size: 16px;
     }
   }
 </style>

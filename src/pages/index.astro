@@ -16,7 +16,6 @@ const latestPosts = getLatestPosts(4);
   
   <main class="main-content">
     <div class="container">
-      <!-- Featured Articles -->
       <section class="featured-section">
         <h2 class="section-title">Featured Articles</h2>
         <div class="featured-grid">
@@ -26,7 +25,6 @@ const latestPosts = getLatestPosts(4);
         </div>
       </section>
 
-      <!-- Latest Posts -->
       <section id="latest-posts" class="latest-section">
         <h2 class="section-title">Latest Insights</h2>
         <div class="posts-grid">
@@ -39,7 +37,6 @@ const latestPosts = getLatestPosts(4);
         </div>
       </section>
 
-      <!-- Categories -->
       <section class="categories-section">
         <h2 class="section-title">Explore Categories</h2>
         <div class="categories-grid">
@@ -70,7 +67,6 @@ const latestPosts = getLatestPosts(4);
         </div>
       </section>
 
-      <!-- Quick Actions -->
       <section class="quick-actions-section">
         <h2 class="section-title">Quick Actions</h2>
         <div class="quick-actions-grid">
@@ -118,7 +114,6 @@ const latestPosts = getLatestPosts(4);
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Quick search functionality
     const quickSearchForm = document.getElementById('quickSearchForm');
     const quickSearchInput = document.getElementById('quickSearchInput');
     
@@ -132,7 +127,6 @@ const latestPosts = getLatestPosts(4);
       });
     }
     
-    // Quick newsletter functionality
     const quickNewsletterForm = document.getElementById('quickNewsletterForm');
     const quickEmailInput = document.getElementById('quickEmailInput');
     const quickMessage = document.getElementById('quickMessage');
@@ -149,22 +143,19 @@ const latestPosts = getLatestPosts(4);
           return;
         }
         
-        // Show loading state
         const submitBtn = quickNewsletterForm.querySelector('.newsletter-action-btn');
         const originalText = submitBtn.textContent;
         submitBtn.textContent = 'Subscribing...';
         submitBtn.disabled = true;
         
         try {
-          // Send email to quintinmcfadden@gmail.com
           await sendSubscriptionEmail(email);
           
-          // Show success message
-          showQuickMessage('Quintin will be notified! Thank you.', 'success');
+          showQuickMessage('Quintin will be notified! Thank you', 'success');
           quickNewsletterForm.reset();
           
         } catch (error) {
-          showQuickMessage('Thank you for subscribing!', 'success');
+          showQuickMessage('Thank you for subscribing', 'success');
           quickNewsletterForm.reset();
         } finally {
           submitBtn.textContent = originalText;
@@ -184,21 +175,19 @@ const latestPosts = getLatestPosts(4);
       }
     }
     
-    // Send subscription email to quintinmcfadden@gmail.com
     async function sendSubscriptionEmail(subscriberEmail) {
       const subject = encodeURIComponent('New Newsletter Subscription - CyberSec Insights Homepage');
-      const body = encodeURIComponent(`New newsletter subscription from the homepage!
+      const body = encodeURIComponent(`New newsletter subscription from the homepage
 
 Subscriber Email: ${subscriberEmail}
 Subscription Date: ${new Date().toLocaleString()}
 Source: CyberSec Insights Homepage
 
-Please add this email to your newsletter list.
+Please add this email to your newsletter list
 
 Best regards,
 CyberSec Insights Website`);
       
-      // Open email client with pre-filled information
       window.open(`mailto:quintinmcfadden@gmail.com?subject=${subject}&body=${body}`, '_blank');
       
       return Promise.resolve({ success: true });
@@ -358,7 +347,6 @@ CyberSec Insights Website`);
     transform: translateX(0);
   }
 
-  /* Quick Actions Section */
   .quick-actions-section {
     margin-bottom: 3rem;
   }

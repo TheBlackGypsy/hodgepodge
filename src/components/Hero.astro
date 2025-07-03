@@ -13,7 +13,7 @@
       </h1>
       <p class="hero-description">
         Stay ahead of cyber threats with expert insights, latest security trends, 
-        and professional defense strategies from industry leaders.
+        and professional defense strategies from industry leaders
       </p>
       <div class="hero-actions">
         <a href="#latest-posts" class="btn latest-btn">Latest Articles</a>
@@ -39,7 +39,6 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Smooth scroll for latest articles button
     const latestBtn = document.querySelector('.latest-btn');
     if (latestBtn) {
       latestBtn.addEventListener('click', function(e) {
@@ -54,7 +53,6 @@
       });
     }
     
-    // Add click animation to buttons
     const heroButtons = document.querySelectorAll('.hero-actions .btn');
     heroButtons.forEach(button => {
       button.addEventListener('click', function() {
@@ -65,7 +63,6 @@
       });
     });
     
-    // Animate stats on scroll
     const stats = document.querySelectorAll('.stat-number');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

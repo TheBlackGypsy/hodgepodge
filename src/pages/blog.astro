@@ -7,7 +7,6 @@ import { blogPosts, getFeaturedPosts } from '../data/blogPosts.ts';
 
 const featuredPosts = getFeaturedPosts();
 
-// Handle search query
 const searchQuery = Astro.url.searchParams.get('search') || '';
 const filteredPosts = searchQuery 
   ? blogPosts.filter(post => 
@@ -19,7 +18,6 @@ const filteredPosts = searchQuery
 
 const allPosts = filteredPosts.sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
 
-// Group posts by category
 const postsByCategory = {
   'Threat Analysis': filteredPosts.filter(post => post.category === 'Threat Analysis'),
   'Defense': filteredPosts.filter(post => post.category === 'Defense'),
@@ -27,10 +25,8 @@ const postsByCategory = {
   'Industry News': filteredPosts.filter(post => post.category === 'Industry News')
 };
 
-// Get unique categories
 const categories = ['All', ...Object.keys(postsByCategory)];
 
-// Blog statistics
 const totalPosts = allPosts.length;
 const totalReadTime = allPosts.reduce((total, post) => {
   const minutes = parseInt(post.readTime.split(' ')[0]);
@@ -39,19 +35,17 @@ const totalReadTime = allPosts.reduce((total, post) => {
 const avgReadTime = Math.round(totalReadTime / totalPosts);
 ---
 
-<Layout title="Blog - CyberSec Insights" description="Explore our comprehensive collection of cybersecurity articles, tutorials, and industry insights covering threats, defense strategies, and best practices.">
+<Layout title="Blog - CyberSec Insights" description="Explore our comprehensive collection of cybersecurity articles, tutorials, and industry insights covering threats, defense strategies, and best practices">
   <Header />
   
   <main class="blog-content">
     <div class="container">
-      <!-- Blog Header -->
       <div class="blog-header">
         <h1>Cybersecurity Blog</h1>
         <p class="blog-subtitle">
           Expert insights, practical tutorials, and the latest cybersecurity intelligence
         </p>
         
-        <!-- Search Results -->
         {searchQuery && (
           <div class="search-results">
             <p>Search results for: <strong>"{searchQuery}"</strong></p>
@@ -60,7 +54,6 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
           </div>
         )}
         
-        <!-- Blog Stats -->
         <div class="blog-stats">
           <div class="stat-item">
             <span class="stat-number">{totalPosts}</span>
@@ -81,7 +74,6 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         </div>
       </div>
 
-      <!-- Featured Articles (only show if no search) -->
       {!searchQuery && (
         <section class="featured-section">
           <h2 class="section-title">Featured Articles</h2>
@@ -93,7 +85,6 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         </section>
       )}
 
-      <!-- Category Filter -->
       <section class="filter-section">
         <h2 class="section-title">Browse by Category</h2>
         <div class="category-filters" id="categoryFilters">
@@ -112,17 +103,14 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         </div>
       </section>
 
-      <!-- All Articles -->
       <section class="all-articles">
         <div class="articles-container">
-          <!-- All Posts -->
           <div class="articles-grid" data-category="All">
             {allPosts.map(post => (
               <BlogCard {...post} />
             ))}
           </div>
 
-          <!-- Category-specific grids -->
           {Object.entries(postsByCategory).map(([category, posts]) => (
             <div class="articles-grid hidden" data-category={category}>
               {posts.map(post => (
@@ -133,12 +121,11 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         </div>
       </section>
 
-      <!-- Newsletter Signup -->
       <section class="newsletter-section">
         <div class="newsletter-card">
           <div class="newsletter-content">
             <h3>Stay Updated with Cybersecurity Insights</h3>
-            <p>Get the latest articles, threat intelligence, and security best practices delivered to your inbox.</p>
+            <p>Get the latest articles, threat intelligence, and security best practices delivered to your inbox</p>
             <form class="newsletter-form" id="blogNewsletterForm">
               <div class="input-container">
                 <input 
@@ -158,13 +145,12 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
                 </span>
               </button>
             </form>
-            <p class="newsletter-note">Join 50,000+ security professionals. No spam, unsubscribe anytime.</p>
+            <p class="newsletter-note">Join 50,000+ security professionals. No spam, unsubscribe anytime</p>
             
-            <!-- Success Message Only -->
             <div class="message-container">
               <div class="success-message hidden" id="blogSuccessMessage">
                 <span class="message-icon">✅</span>
-                <span class="message-text">Thank you for subscribing! Check your email for confirmation.</span>
+                <span class="message-text">Thank you for subscribing! Check your email for confirmation</span>
               </div>
             </div>
           </div>
@@ -172,7 +158,6 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
         </div>
       </section>
 
-      <!-- Archive Section -->
       <section class="archive-section">
         <h2 class="section-title">Article Archive</h2>
         <div class="archive-grid">
@@ -218,27 +203,22 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
 </Layout>
 
 <script>
-  // Category filtering functionality
   document.addEventListener('DOMContentLoaded', function() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const articleGrids = document.querySelectorAll('.articles-grid');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
     
-    // Category filtering
     filterButtons.forEach(button => {
       button.addEventListener('click', function() {
         const category = this.getAttribute('data-category');
         
-        // Update active button
         filterButtons.forEach(btn => btn.classList.remove('active'));
         this.classList.add('active');
         
-        // Show/hide article grids with smooth transition
         articleGrids.forEach(grid => {
           const gridCategory = grid.getAttribute('data-category');
           if (gridCategory === category) {
             grid.classList.remove('hidden');
-            // Trigger reflow for smooth animation
             grid.offsetHeight;
           } else {
             grid.classList.add('hidden');
@@ -247,14 +227,12 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
       });
     });
     
-    // Clear search functionality
     if (clearSearchBtn) {
       clearSearchBtn.addEventListener('click', function() {
         window.location.href = '/blog';
       });
     }
     
-    // Enhanced Newsletter form handling
     const blogForm = document.getElementById('blogNewsletterForm');
     const blogEmailInput = document.getElementById('blogEmailInput');
     const blogSubscribeBtn = document.getElementById('blogSubscribeBtn');
@@ -263,13 +241,11 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
     const blogSuccessMessage = document.getElementById('blogSuccessMessage');
     const blogEmailValidation = document.getElementById('blogEmailValidation');
     
-    // Email validation function
     function validateEmail(email) {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       return emailRegex.test(email);
     }
     
-    // Real-time email validation
     if (blogEmailInput) {
       blogEmailInput.addEventListener('input', function() {
         const email = this.value.trim();
@@ -290,38 +266,32 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
       });
     }
     
-    // Form submission handling
     if (blogForm) {
       blogForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const email = blogEmailInput.value.trim();
         
-        // Validate email
         if (!validateEmail(email)) {
           blogEmailInput.focus();
           return;
         }
         
-        // Show loading state
         setBlogLoadingState(true);
         hideBlogMessages();
         
         try {
-          // Send email to quintinmcfadden@gmail.com
           await sendSubscriptionEmail(email);
           
-          // Show success message
-          showBlogSuccess('Welcome! Quintin will be notified of your subscription.');
+          showBlogSuccess('Welcome! Quintin will be notified of your subscription');
           
-          // Reset form
           blogForm.reset();
           blogEmailValidation.textContent = '';
           blogEmailValidation.className = 'input-validation';
           
         } catch (error) {
           console.error('Subscription error:', error);
-          showBlogSuccess('Thank you for subscribing!');
+          showBlogSuccess('Thank you for subscribing');
           blogForm.reset();
           blogEmailValidation.textContent = '';
           blogEmailValidation.className = 'input-validation';
@@ -331,7 +301,6 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
       });
     }
     
-    // Helper functions
     function setBlogLoadingState(loading) {
       if (!blogSubscribeBtn) return;
       
@@ -361,21 +330,19 @@ const avgReadTime = Math.round(totalReadTime / totalPosts);
       blogSuccessMessage?.classList.add('hidden');
     }
     
-    // Send subscription email to quintinmcfadden@gmail.com
     async function sendSubscriptionEmail(subscriberEmail) {
       const subject = encodeURIComponent('New Newsletter Subscription - CyberSec Insights Blog');
-      const body = encodeURIComponent(`New newsletter subscription from the blog page!
+      const body = encodeURIComponent(`New newsletter subscription from the blog page
 
 Subscriber Email: ${subscriberEmail}
 Subscription Date: ${new Date().toLocaleString()}
 Source: CyberSec Insights Blog Page
 
-Please add this email to your newsletter list.
+Please add this email to your newsletter list
 
 Best regards,
 CyberSec Insights Website`);
       
-      // Open email client with pre-filled information
       window.open(`mailto:quintinmcfadden@gmail.com?subject=${subject}&body=${body}`, '_blank');
       
       return Promise.resolve({ success: true });
@@ -497,7 +464,6 @@ CyberSec Insights Website`);
     background-clip: text;
   }
 
-  /* Featured Section */
   .featured-section {
     margin-bottom: 5rem;
   }
@@ -508,7 +474,6 @@ CyberSec Insights Website`);
     gap: 2rem;
   }
 
-  /* Filter Section */
   .filter-section {
     margin-bottom: 3rem;
   }
@@ -547,7 +512,6 @@ CyberSec Insights Website`);
     box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
   }
 
-  /* Articles Section */
   .all-articles {
     margin-bottom: 5rem;
   }
@@ -563,7 +527,6 @@ CyberSec Insights Website`);
     display: none;
   }
 
-  /* Newsletter Section */
   .newsletter-section {
     margin-bottom: 5rem;
   }
@@ -734,7 +697,6 @@ CyberSec Insights Website`);
     filter: drop-shadow(0 0 20px #10B981);
   }
 
-  /* Archive Section */
   .archive-section {
     margin-bottom: 3rem;
   }
@@ -913,7 +875,7 @@ CyberSec Insights Website`);
     }
 
     .newsletter-form input {
-      font-size: 16px; /* Prevents zoom on iOS */
+      font-size: 16px;
     }
   }
 </style>

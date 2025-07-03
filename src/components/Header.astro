@@ -34,7 +34,6 @@ const currentPath = Astro.url.pathname;
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Sample article data for search suggestions
     const articles = [
       { title: "Advanced Persistent Threats: What to Expect in 2025", slug: "advanced-persistent-threats-2025", category: "Threat Analysis", tags: ["APT", "Threat Intelligence", "Cybersecurity", "AI Security"] },
       { title: "Zero Trust Implementation: A Practical Guide", slug: "zero-trust-implementation-guide", category: "Defense", tags: ["Zero Trust", "Implementation", "Enterprise Security", "IAM"] },
@@ -44,7 +43,6 @@ const currentPath = Astro.url.pathname;
       { title: "Automating Incident Response: SOAR Implementation Guide", slug: "incident-response-automation", category: "Defense", tags: ["SOAR", "Automation", "Incident Response", "Security Operations"] }
     ];
 
-    // Mobile menu functionality
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const navMenu = document.getElementById('navMenu');
     
@@ -55,7 +53,6 @@ const currentPath = Astro.url.pathname;
       });
     }
     
-    // Search functionality
     const headerSearchForm = document.getElementById('headerSearchForm');
     const headerSearchInput = document.getElementById('headerSearchInput');
     const searchSuggestions = document.getElementById('searchSuggestions');
@@ -95,7 +92,6 @@ const currentPath = Astro.url.pathname;
       
       searchSuggestions.style.display = 'block';
       
-      // Add click handlers to suggestions
       searchSuggestions.querySelectorAll('.suggestion-item').forEach(item => {
         item.addEventListener('click', function() {
           const slug = this.getAttribute('data-slug');
@@ -120,7 +116,6 @@ const currentPath = Astro.url.pathname;
         }
       });
       
-      // Hide suggestions when clicking outside
       document.addEventListener('click', function(e) {
         if (!e.target.closest('.nav-search')) {
           searchSuggestions.style.display = 'none';
